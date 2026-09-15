@@ -1,0 +1,16 @@
+{
+  "name": "sigma-mes-methodology",
+  "owner": { "name": "Ruslan Karimov", "url": "https://github.com/petrovich-opendev" },
+  "description": "Навыки по методологии разработки СИГМА.MES+ (тейлоринг OpenUP 1.5.1.5)",
+  "plugins": [
+    {
+      "name": "product-vision-interview",
+      "source": "./plugins/product-vision-interview",
+      "description": "Интервью для владельца продукта: превращает идею в проверяемое продуктовое описание в границах роли по OpenUP СИГМА.MES+",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": ["openup", "product-owner", "requirements", "vision", "sdlc"],
+      "license": "MIT"
+    }
+  ]
+}
