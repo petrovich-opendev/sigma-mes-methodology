@@ -7,7 +7,7 @@
       "name": "product-vision-interview",
       "source": "./plugins/product-vision-interview",
       "description": "Интервью для владельца продукта: превращает идею в проверяемое продуктовое описание в границах роли по OpenUP СИГМА.MES+",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "productivity",
       "keywords": ["openup", "product-owner", "requirements", "vision", "sdlc"],
       "license": "MIT"

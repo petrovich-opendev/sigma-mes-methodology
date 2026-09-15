@@ -123,6 +123,8 @@ role_requests:
 
 open_questions: []
 
+attachments: []
+
 term_candidates:
   - id: TC-001
     term: "паспорт партии"
@@ -442,6 +444,8 @@ open_questions:
     formulated_by: "ИИ"
     section: 9
     related: [ST-012]
+
+attachments: []
 
 term_candidates:
   - id: TC-001

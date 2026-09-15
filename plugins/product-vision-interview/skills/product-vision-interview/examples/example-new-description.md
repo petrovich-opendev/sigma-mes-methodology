@@ -478,6 +478,8 @@ role_requests:
     confirmation_status: "ожидает заключения роли"
     linked_statement: ST-003
 
+attachments: []
+
 term_candidates:
   - id: TC-001
     term: "MES-конфигурация по чертежу"
