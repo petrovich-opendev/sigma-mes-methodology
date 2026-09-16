@@ -1,0 +1,8 @@
+{
+  "name": "sigma-mes-skills",
+  "description": "Навыки ролей процесса СИГМА.MES+ (тейлоринг OpenUP 1.5.1.5): один навык — одна роль",
+  "version": "0.5.0",
+  "author": { "name": "Ruslan Karimov", "url": "https://github.com/petrovich-opendev" },
+  "license": "MIT",
+  "keywords": ["openup", "product-owner", "requirements", "vision", "sdlc"]
+}

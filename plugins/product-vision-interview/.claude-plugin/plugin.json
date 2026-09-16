@@ -1,8 +1,0 @@
-{
-  "name": "product-vision-interview",
-  "description": "Интервью для владельца продукта: превращает идею в проверяемое продуктовое описание в границах роли по OpenUP СИГМА.MES+",
-  "version": "0.4.0",
-  "author": { "name": "Ruslan Karimov", "url": "https://github.com/petrovich-opendev" },
-  "license": "MIT",
-  "keywords": ["openup", "product-owner", "requirements", "vision", "sdlc"]
-}
