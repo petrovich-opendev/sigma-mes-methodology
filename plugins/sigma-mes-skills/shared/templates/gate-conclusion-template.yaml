@@ -3,6 +3,8 @@
 # Меток GO, REWORK, STOP здесь нет ни в одном поле: см. references/gate-conclusion.md.
 
 product_id: "<идентификатор продукта — тот же, что в description.yaml>"
+version: 1                             # номер редакции заключения; растёт при повторном
+                                       # заключении той же роли к тому же гейту
 gate: GATE-01
 role: ROLE-FUNCTIONAL-OWNER
 holder: "<носитель роли из roles_declared; «не назначена» либо «не назван»>"

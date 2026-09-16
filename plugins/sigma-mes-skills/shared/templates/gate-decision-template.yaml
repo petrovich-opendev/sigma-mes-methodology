@@ -4,6 +4,8 @@
 # Путь хранения: docs/product/<product-id>/gates/<GATE-NN>/decision.yaml
 
 product_id: "<идентификатор продукта — тот же, что в description.yaml>"
+version: 1                             # номер редакции решения; растёт, когда по тому же
+                                       # гейту принимается новое решение
 gate: GATE-01
 responsible_role: ROLE-PRODUCT-OWNER
   # Ответственная роль этого гейта — из shared/references/roles-gates.md,

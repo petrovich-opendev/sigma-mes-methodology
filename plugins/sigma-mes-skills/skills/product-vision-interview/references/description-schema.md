@@ -41,7 +41,7 @@ YAML — это проекция той же модели положений, ч
 
 ### Отдельные массивы
 
-Помимо `statements`, документ содержит массивы, дословно этими именами: `roles_declared`, `open_questions`, `role_requests`, `attachments`, `term_candidates`, `product_risks`, `out_of_scope`, `process_references`.
+Помимо `statements`, документ содержит массивы, дословно этими именами: `roles_declared`, `open_questions`, `role_requests`, `attachments`, `term_candidates`, `product_risks`, `out_of_scope`, `process_references`, `findings_state`.
 
 Минимальный состав полей для каждого — чтобы шаблон и примеры не расходились:
 
