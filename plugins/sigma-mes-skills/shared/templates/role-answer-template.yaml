@@ -1,8 +1,10 @@
-# role-answer.yaml — ответ роли на адресованный ей запрос (role_requests).
+# role-answer.yaml — ответ роли на адресованное ей: запрос роли (role_requests)
+# либо открытый вопрос (open_questions). Форма одна для обоих случаев.
 # Ответ не заменяет заключение к гейту и сам по себе статус положения не меняет:
 # он даёт основание навыку перевести положение в «ответ роли зафиксирован» и
 # записать source. Полное описание — shared/references/role-answer.md.
 # Путь хранения: docs/product/<product-id>/answers/<RR-NNN>-<ROLE-CODE>.yaml
+# либо answers/<OQ-NNN>-<ROLE-CODE>.yaml — по тому, на что дан ответ.
 
 product_id: "<идентификатор продукта>"
 request_id: RR-001                 # обязателен: ответ без адреса не проверяем.
@@ -12,7 +14,8 @@ request_id: RR-001                 # обязателен: ответ без а�
                                    # с полем role запроса либо addressed_to вопроса
 request_document: "description.yaml версии <N>"   # либо "domain.yaml версии <N>"
 
-role: ROLE-ARCHITECT               # тот же код, что в поле role запроса
+role: ROLE-ARCHITECT               # у запроса роли — тот же код, что в его поле role;
+                                   # у открытого вопроса — тот же, что в его addressed_to
 holder: "<носитель роли из roles_declared; «не назначена» либо «не назван»>"
 date: "<ГГГГ-ММ-ДД>"
 

@@ -78,7 +78,7 @@ plugins/sigma-mes-skills/                — плагин навыков рол�
     domain-schema.md                     — схема domain.yaml
     gate-conclusion.md                   — формат заключения роли к гейту
     gate-decision.md                     — формат записи решения по гейту
-    role-answer.md                       — формат ответа роли на запрос
+    role-answer.md                       — формат ответа роли на запрос и на вопрос
     incoming-documents.md                — приём ответов и заключений в режиме изменения
     architect-handoff.md                 — передача материалов архитектору
   shared/templates/                      — формы для ролей, у которых навыка нет
@@ -100,10 +100,10 @@ build/
 tests/
   shared/structure.md                    — семь проверок структуры репозитория
   product-vision-interview/
-    scenarios.md                         — тридцать два сценария проверки
+    scenarios.md                         — тридцать пять сценариев проверки
     expected-behaviour.md                — ожидаемое поведение и метрики прогона
   domain-model-interview/
-    scenarios.md                         — двадцать сценариев проверки
+    scenarios.md                         — двадцать один сценарий проверки
     expected-behaviour.md                — ожидаемое поведение
 docs/
   new-skill-checklist.md                 — что обязан соблюдать новый навык
