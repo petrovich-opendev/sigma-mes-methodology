@@ -5,7 +5,11 @@
 # Путь хранения: docs/product/<product-id>/answers/<RR-NNN>-<ROLE-CODE>.yaml
 
 product_id: "<идентификатор продукта>"
-request_id: RR-001                 # обязателен: ответ без запроса не проверяем
+request_id: RR-001                 # обязателен: ответ без адреса не проверяем.
+                                   # RR-… — ответ на запрос роли (меняет статус
+                                   # связанного положения); OQ-… — ответ на открытый
+                                   # вопрос (закрывает сам вопрос). Роль сверяется
+                                   # с полем role запроса либо addressed_to вопроса
 request_document: "description.yaml версии <N>"   # либо "domain.yaml версии <N>"
 
 role: ROLE-ARCHITECT               # тот же код, что в поле role запроса

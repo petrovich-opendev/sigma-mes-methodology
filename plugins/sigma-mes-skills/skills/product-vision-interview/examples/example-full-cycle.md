@@ -68,6 +68,7 @@ findings_state:
 open_questions:
   - id: OQ-006
     text: "Замечание F-003 заключения ROLE-FUNCTIONAL-OWNER о неназванном участнике отклонено владельцем продукта: подключение сервисов выполняется вне продуктовой поверхности. Если функциональный владелец с этим не согласен, вопрос решает владелец процесса."
+    addressed_to: ROLE-PROCESS-OWNER
     formulated_by: "ИИ"
     section: 4
     related: [ST-010]

@@ -65,6 +65,7 @@ objects:
 open_questions:
   - id: OQ-007
     text: "Авторство макетов интерфейса и проектных решений (TERM-DESIGN-DECISIONS) не закреплено ни за одной ролью: ROLE-FUNCTIONAL-OWNER их согласует, ROLE-ARCHITECT участвует, но автор при отсутствии макета не назван."
+    addressed_to: ROLE-PROCESS-OWNER
     formulated_by: "ИИ"
     related: []
     status: "открыт"

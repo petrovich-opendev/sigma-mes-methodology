@@ -214,6 +214,7 @@ role_requests:
 open_questions:
   - id: OQ-101
     text: "Правило признания состояния «временно недоступен» у объекта OBJ-001 не установлено: не определены условие признания, порог по числу неответов сервиса и условие возврата в состояние «подключён»."
+    addressed_to: ROLE-FUNCTIONAL-OWNER
     formulated_by: "ИИ"
     part: objects
     related: [OBJ-001]
@@ -221,6 +222,7 @@ open_questions:
     resolved_by: []
   - id: OQ-102
     text: "Внешняя система авторизации участвует в жизненном цикле объекта OBJ-002 «Сеанс пользователя» — задаёт срок сеанса и подтверждает личность, — но среди участников в разделе 4 продуктового описания не названа."
+    addressed_to: ROLE-PRODUCT-OWNER
     formulated_by: "ИИ"
     part: objects
     related: [OBJ-002]
