@@ -147,11 +147,10 @@ term_candidates:
     term: "паспорт партии"
     definition: ""
     synonyms: []
-    scope: "не определено"
-    owner_role: "не определено"
+    scope: "функциональная область"
+    owner_role: ROLE-FUNCTIONAL-OWNER
     source: "со слов пользователя"
     term_status: candidate
-    check_result: TERM_CANDIDATE
     section: 1
 
 product_risks:
@@ -518,11 +517,10 @@ term_candidates:
     term: "паспорт партии"
     definition: ""
     synonyms: []
-    scope: "не определено"
-    owner_role: "не определено"
+    scope: "функциональная область"
+    owner_role: ROLE-FUNCTIONAL-OWNER
     source: "со слов пользователя"
     term_status: candidate
-    check_result: TERM_CANDIDATE
     section: 1
 
 product_risks:

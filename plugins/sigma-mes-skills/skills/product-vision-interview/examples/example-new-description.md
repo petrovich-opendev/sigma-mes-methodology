@@ -593,11 +593,10 @@ term_candidates:
     term: "MES-конфигурация по чертежу"
     definition: ""
     synonyms: []
-    scope: "не определено"
-    owner_role: "не определено"
+    scope: "функциональная область"
+    owner_role: ROLE-FUNCTIONAL-OWNER
     source: "со слов пользователя"
     term_status: candidate
-    check_result: TERM_CANDIDATE
     section: 7
 
 product_risks:
