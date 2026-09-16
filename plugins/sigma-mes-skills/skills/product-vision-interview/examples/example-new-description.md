@@ -591,7 +591,13 @@ attachments: []
 term_candidates:
   - id: TC-001
     term: "MES-конфигурация по чертежу"
+    definition: ""
+    synonyms: []
+    scope: "не определено"
+    owner_role: "не определено"
+    source: "со слов пользователя"
     term_status: candidate
+    term_check_result: TERM_CANDIDATE
     section: 7
 
 product_risks:

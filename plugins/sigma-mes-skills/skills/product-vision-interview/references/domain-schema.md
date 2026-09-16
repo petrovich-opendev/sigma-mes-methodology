@@ -86,7 +86,7 @@
 
 ## Массив `terms`
 
-Словарь функциональной области. Состав записи — контракт из `terms-registry.md`, раздел «Запись термина», полностью: `id`, `term`, `technical_id`, `definition`, `synonyms`, `scope`, `owner_role`, `source`, `term_status`, `term_check_result`. Отличие от `term_candidates` продуктового описания — в заполненности, а не в составе полей: здесь `definition` заполняется, и `term_status` может принимать значение `approved`.
+Словарь функциональной области. Состав записи — контракт из `terms-registry.md`, раздел «Запись термина», полностью: `id`, `term`, `technical_id`, `definition`, `synonyms`, `scope`, `owner_role`, `source`, `term_status`, `term_check_result`. Отличие от `term_candidates` продуктового описания — в заполненности `definition`, а не в составе полей: здесь определение заполняется, и `term_status` может принимать значение `approved`. `scope`, `owner_role` и `source` обязательны и здесь — как в любой записи термина.
 
 `approved` ставится только по явному утверждению носителем роли, по одному термину, и только когда у записи заполнены `definition`, `scope` и `owner_role`. Термину уровня Конституции и межмодульному термину этот навык `approved` не ставит ни при каких условиях: их утверждает `ROLE-PROCESS-OWNER`.
 

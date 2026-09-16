@@ -145,7 +145,13 @@ attachments: []
 term_candidates:
   - id: TC-001
     term: "паспорт партии"
+    definition: ""
+    synonyms: []
+    scope: "не определено"
+    owner_role: "не определено"
+    source: "со слов пользователя"
     term_status: candidate
+    term_check_result: TERM_CANDIDATE
     section: 1
 
 product_risks:
@@ -510,7 +516,13 @@ attachments: []
 term_candidates:
   - id: TC-001
     term: "паспорт партии"
+    definition: ""
+    synonyms: []
+    scope: "не определено"
+    owner_role: "не определено"
+    source: "со слов пользователя"
     term_status: candidate
+    term_check_result: TERM_CANDIDATE
     section: 1
 
 product_risks:

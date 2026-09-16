@@ -95,6 +95,7 @@ terms:
     term: "Заказ"
     scope: "межмодульный"
     owner_role: ROLE-PROCESS-OWNER
+    source: "со слов функционального владельца"
     term_status: candidate
     formulated_by: "пользователь"
 ```
