@@ -1,0 +1,10 @@
+domain-method
+roles-gates
+statuses
+terms-registry
+description-schema
+domain-schema
+gate-conclusion
+domain-output-format
+gate01-checklist
+domain-boundary-responses
