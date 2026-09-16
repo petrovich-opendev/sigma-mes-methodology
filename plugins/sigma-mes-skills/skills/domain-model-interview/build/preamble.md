@@ -45,9 +45,11 @@
 `ROLE-FUNCTIONAL-OWNER.md` и `.yaml`. Рекомендуемые пути: `docs/product/<product-id>/`
 и `docs/product/<product-id>/gates/GATE-01/`. Ты выдаёшь содержимое в ответе;
 **сохраняет файлы носитель роли сам**. Не утверждай, что файл сохранён.
-Пустые шаблоны лежат в папке
-`plugins/sigma-mes-skills/skills/domain-model-interview/templates/` репозитория навыка —
-приложи их к проекту ChatGPT как knowledge-файлы до начала работы.
+Пустые шаблоны предметной модели лежат в папке
+`plugins/sigma-mes-skills/skills/domain-model-interview/templates/`, а шаблоны заключения
+к гейту — в общей папке `plugins/sigma-mes-skills/shared/templates/`: их форма одна для
+всех ролей, и хранятся они один раз. Приложи нужные к проекту ChatGPT как
+knowledge-файлы до начала работы.
 
 Документ ниже собран из десяти справочников навыка и является единственным источником
 правил: ссылок на внешние файлы в нём нет, все отсылки ведут к его же разделам.

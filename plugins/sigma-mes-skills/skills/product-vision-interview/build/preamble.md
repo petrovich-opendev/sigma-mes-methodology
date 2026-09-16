@@ -27,7 +27,8 @@ Markdown допустимо) — это режим изменения. Если 
 **сохраняет файлы владелец продукта сам**. Не утверждай, что файл сохранён.
 Пустые шаблоны обоих файлов (`description-template.md` и `description-template.yaml`)
 лежат в папке `plugins/sigma-mes-skills/skills/product-vision-interview/templates/` репозитория навыка — приложи их к проекту ChatGPT
-как knowledge-файлы до начала работы.
+как knowledge-файлы до начала работы. Для режима решения по GATE-01 понадобится
+шаблон записи решения из общей папки `plugins/sigma-mes-skills/shared/templates/`.
 
 **Один вопрос за ход.** Анкету не выдавай.
 
