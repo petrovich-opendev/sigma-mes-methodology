@@ -78,6 +78,11 @@ plugins/sigma-mes-skills/                — плагин навыков рол�
     domain-schema.md                     — схема domain.yaml
     gate-conclusion.md                   — формат заключения роли к гейту
     gate-decision.md                     — формат записи решения по гейту
+    role-answer.md                       — формат ответа роли на запрос
+  shared/templates/                      — формы для ролей, у которых навыка нет
+    gate-conclusion-template.md/.yaml
+    gate-decision-template.md/.yaml
+    role-answer-template.md/.yaml
   skills/
     product-vision-interview/            — роль ROLE-PRODUCT-OWNER
       SKILL.md, references/, examples/, templates/, build/
@@ -97,7 +102,9 @@ tests/
   domain-model-interview/
     scenarios.md                         — пятнадцать сценариев проверки
     expected-behaviour.md                — ожидаемое поведение
-docs/new-skill-checklist.md              — что обязан соблюдать новый навык
+docs/
+  new-skill-checklist.md                 — что обязан соблюдать новый навык
+  gate01-checklist-pm.md                 — что проверяет руководитель проекта к GATE-01
 INSTALL.md                               — пути установки и переход между версиями
 README.md                                — этот файл
 OPEN-QUESTIONS.md                        — открытые вопросы методики и схемы
@@ -106,6 +113,10 @@ OPEN-QUESTIONS.md                        — открытые вопросы м�
 В каждом навыке `references/` содержит его собственные справочники и копии общих,
 сгенерированные `build/sync-shared.sh`. Копии помечены первой строкой
 «СГЕНЕРИРОВАНО» и руками не правятся: правка вносится в `shared/references/`.
+
+Формы гейтовых документов лежат в `shared/templates/` и по навыкам не копируются:
+заключение к гейту даёт любая роль, а не только та, у которой есть навык. Как
+работать без навыка — в [INSTALL.md](INSTALL.md), раздел «Роль без навыка».
 
 ## Установка
 
