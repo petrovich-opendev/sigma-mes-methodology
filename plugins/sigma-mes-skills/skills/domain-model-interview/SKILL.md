@@ -80,6 +80,7 @@ description: Работа с функциональным владельцем (
 | `references/gate01-checklist.md` | в режиме заключения к GATE-01 — целиком, до первой реплики о находках |
 | `references/gate-conclusion.md` | на шаге выдачи заключения |
 | `references/incoming-documents.md` | в режиме изменения, если приложен ответ роли или заключение к гейту |
+| `references/architect-handoff.md` | когда речь заходит о передаче материалов в Проработку: что от этой роли входит в передачу |
 | `references/domain-output-format.md` | на шаге выдачи результата |
 | `references/description-schema.md` | при чтении приложенного описания — чтобы понимать, что означает каждое поле входа |
 

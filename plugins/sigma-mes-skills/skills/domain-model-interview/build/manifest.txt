@@ -8,6 +8,7 @@ gate-conclusion
 gate-decision
 role-answer
 incoming-documents
+architect-handoff
 domain-output-format
 gate01-checklist
 domain-boundary-responses
