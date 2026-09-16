@@ -92,6 +92,10 @@
 
 Поле `part` у записи словаря — `terms`.
 
+## Массив `findings_state`
+
+Состояние работы по находкам приложенного заключения к гейту. Состав полей и правила — те же, что в `description-schema.md`; в предметной модели массив появляется, когда заключение с находками, адресованными `ROLE-FUNCTIONAL-OWNER`, приложено в режим изменения.
+
 ## Массивы `open_questions`, `role_requests`, `attachments`, `process_references`
 
 Состав полей — как в `description-schema.md`, с одной заменой: вместо `section` используется `part` со значениями `objects`, `rules`, `scenario`, `terms`. У процессных вопросов поле `part` отсутствует, как и `section` в продуктовом описании.
