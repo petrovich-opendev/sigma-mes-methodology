@@ -335,7 +335,7 @@ term_candidates:
     technical_id: TERM-RELEASE
     definition: ""
     synonyms: []
-    scope: "Конституция"
+    scope: "уровень Конституции"
     owner_role: ROLE-RELEASE-AUTHORITY
     source: "реестр Конституции v0.8"
     term_status: candidate

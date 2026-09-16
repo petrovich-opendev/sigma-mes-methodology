@@ -1,6 +1,10 @@
 core-method
 roles-gates
 statuses
-output-format
+terms-registry
 description-schema
+output-format
+gate-conclusion
+gate-decision
+role-answer
 boundary-responses

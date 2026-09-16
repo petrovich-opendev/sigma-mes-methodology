@@ -5,6 +5,7 @@ terms-registry
 description-schema
 domain-schema
 gate-conclusion
+role-answer
 domain-output-format
 gate01-checklist
 domain-boundary-responses
