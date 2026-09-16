@@ -1,10 +1,17 @@
 # sigma-mes-methodology
 
-Публичный маркетплейс плагинов Claude Code. В репозитории один плагин с одним
-навыком — `product-vision-interview`. Из того же исходника (`plugins/product-vision-interview/skills/product-vision-interview/references/`)
-скрипт `build/build-chatgpt.sh` собирает платформонезависимую инструкцию
-`build/chatgpt-instructions.md` — тот же метод, годный для чата ChatGPT без
-установки плагина.
+Публичный маркетплейс плагинов Claude Code. В репозитории один плагин —
+`sigma-mes-skills`, внутри которого живут навыки ролей процесса СИГМА.MES+.
+Правило упаковки: **один навык — одна роль**, роли не объединяются ни в одном
+навыке. Сейчас навык один — `product-vision-interview` (роль владельца
+продукта).
+
+Из того же исходника
+(`plugins/sigma-mes-skills/skills/product-vision-interview/references/`)
+скрипт `build/build.sh` собирает платформонезависимую инструкцию
+`build/product-vision-interview/chatgpt-instructions.md` — тот же метод, годный
+для чата ChatGPT без установки плагина. Сборка делается на роль: один файл на
+один навык, общей сборки на несколько ролей нет.
 
 ## Для кого
 
@@ -43,32 +50,64 @@
 
 ```
 .claude-plugin/marketplace.json          — описание маркетплейса
-plugins/product-vision-interview/        — плагин
+plugins/sigma-mes-skills/                — плагин навыков ролей
   .claude-plugin/plugin.json
-  skills/product-vision-interview/
-    SKILL.md                             — порядок работы навыка
-    references/                          — методические справочники
-    examples/                            — два эталонных диалога
-    templates/                           — пустые шаблоны description.md/.yaml
-build/build-chatgpt.sh                   — сборка инструкции для ChatGPT
-build/chatgpt-instructions.md            — собранный результат (коммитится)
-tests/scenarios.md                       — девятнадцать сценариев проверки
-tests/expected-behaviour.md              — ожидаемое поведение и метрики прогона
+  shared/
+    references/                          — общие справочники, хранятся один раз
+      roles-gates.md
+      statuses.md
+      description-schema.md              — схема description.yaml: контракт между ролями
+  skills/
+    product-vision-interview/
+      SKILL.md                           — порядок работы навыка
+      references/                        — справочники навыка + копии общих
+        core-method.md
+        output-format.md
+        boundary-responses.md
+        roles-gates.md                   — копия, сгенерирована
+        statuses.md                      — копия, сгенерирована
+        description-schema.md            — копия, сгенерирована
+      examples/                          — два эталонных диалога
+      templates/                         — пустые шаблоны description.md/.yaml
+      build/
+        preamble.md                      — преамбула сборки этого навыка
+        manifest.txt                     — порядок справочников в сборке
+        hard-rules.md                    — жёсткие запреты, идут первыми
+build/
+  build.sh                               — сборка инструкции на один навык
+  sync-shared.sh                         — раскладка общих справочников по навыкам
+  check.sh                               — копии не разошлись с источником
+  product-vision-interview/
+    chatgpt-instructions.md              — собранный результат (коммитится)
+tests/
+  shared/structure.md                    — проверки структуры репозитория
+  product-vision-interview/
+    scenarios.md                         — девятнадцать сценариев проверки
+    expected-behaviour.md                — ожидаемое поведение и метрики прогона
+docs/new-skill-checklist.md              — что обязан соблюдать новый навык
+INSTALL.md                               — три пути установки и переход с 0.4.0
+README.md                                — этот файл
+OPEN-QUESTIONS.md                        — открытые вопросы методики и схемы
 ```
 
 ## Установка
 
 ```
 /plugin marketplace add petrovich-opendev/sigma-mes-methodology
-/plugin install product-vision-interview@sigma-mes-methodology
+/plugin install sigma-mes-skills@sigma-mes-methodology
 ```
 
-Подробности, включая установку вне Claude Code (через `build/chatgpt-instructions.md`)
-и обновление плагина — в [INSTALL.md](INSTALL.md).
+Подробности, включая установку вне Claude Code (через
+`build/product-vision-interview/chatgpt-instructions.md`), переход с версии
+0.4.0 и обновление плагина — в [INSTALL.md](INSTALL.md).
 
 ## Статус
 
-v0.4.0 — работа над ошибками по итогам реального прогона:
+v0.5.0 — структурная версия, содержание методики без изменений: несколько
+навыков в одном плагине, общие справочники, сборка на роль, версия в первой
+реплике.
+
+Ранее: v0.4.0 — работа над ошибками по итогам реального прогона:
 
 - шапка документа и роли собираются отдельным шагом в начале сессии, а не
   остаются плейсхолдерами;
@@ -83,9 +122,9 @@ v0.4.0 — работа над ошибками по итогам реально
   M01–M13» с одним открытым вопросом на документ;
 - в описании появился блок «Состояние для GATE-01».
 
-Ранее: v0.3.0 — независимая проверка (ROLE-INDEPENDENT-REVIEWER) переведена
-из обязательных заключений в рекомендательные; v0.2.0 — правила приёма
-материала пользователя (макеты, файлы, числа, нормативы, интеграции,
+Ещё раньше: v0.3.0 — независимая проверка (ROLE-INDEPENDENT-REVIEWER)
+переведена из обязательных заключений в рекомендательные; v0.2.0 — правила
+приёма материала пользователя (макеты, файлы, числа, нормативы, интеграции,
 приоритет ролей, конфликт с ранее записанным).
 Процессная опора — проект Конституции СИГМА.MES+ v0.6 (ЧЕРНОВИК,
 не утверждена); `full_conformance_claim = false` — заявления о полном

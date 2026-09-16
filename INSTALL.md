@@ -8,8 +8,12 @@
 
 ```
 /plugin marketplace add petrovich-opendev/sigma-mes-methodology
-/plugin install product-vision-interview@sigma-mes-methodology
+/plugin install sigma-mes-skills@sigma-mes-methodology
 ```
+
+Плагин `sigma-mes-skills` ставится целиком; навыки ролей, которые в нём есть,
+подключаются вместе с ним. Сейчас в плагине один навык —
+`product-vision-interview`.
 
 Если репозиторий размещён не на GitHub, а на своём хосте (например, GitLab),
 маркетплейс добавляется по прямому URL:
@@ -18,7 +22,7 @@
 /plugin marketplace add https://gitlab.example.com/<group>/sigma-mes-methodology.git
 ```
 
-Дальше — та же команда `/plugin install product-vision-interview@sigma-mes-methodology`.
+Дальше — та же команда `/plugin install sigma-mes-skills@sigma-mes-methodology`.
 
 Если после установки Claude Code не увидел навык, выполните `/reload-plugins`.
 
@@ -33,12 +37,12 @@
 
 ```
 claude plugin validate .
-claude plugin validate ./plugins/product-vision-interview
+claude plugin validate ./plugins/sigma-mes-skills
 ```
 
 ## Путь 2. Claude Code, командой целиком
 
-Чтобы навык подключался у всех участников проекта сразу после того, как они
+Чтобы навыки подключались у всех участников проекта сразу после того, как они
 доверятся папке, добавьте в `.claude/settings.json` проекта:
 
 ```json
@@ -52,7 +56,7 @@ claude plugin validate ./plugins/product-vision-interview
     }
   },
   "enabledPlugins": {
-    "product-vision-interview@sigma-mes-methodology": true
+    "sigma-mes-skills@sigma-mes-methodology": true
   }
 }
 ```
@@ -62,30 +66,70 @@ claude plugin validate ./plugins/product-vision-interview
 
 ## Путь 3. ChatGPT, без Claude Code
 
-Метод платформонезависим: тот же `references/` собран в единый файл
-`build/chatgpt-instructions.md`.
+Метод платформонезависим: справочники навыка собраны в единый файл
+`build/product-vision-interview/chatgpt-instructions.md`.
 
-1. Скопируйте содержимое `build/chatgpt-instructions.md` в инструкции проекта
-   ChatGPT либо в поле Instructions своего Custom GPT.
+1. Скопируйте содержимое `build/product-vision-interview/chatgpt-instructions.md`
+   в инструкции проекта ChatGPT либо в поле Instructions своего Custom GPT.
 2. Приложите пустые шаблоны `description.md` и `description.yaml` из
-   `templates/` как knowledge-файлы — по ним ChatGPT воспроизводит форму
-   результата (девять разделов и структуру YAML), не изобретая её заново.
-3. Если менялись файлы в `references/`, пересоберите инструкцию заново:
+   `plugins/sigma-mes-skills/skills/product-vision-interview/templates/` как
+   knowledge-файлы — по ним ChatGPT воспроизводит форму результата (девять
+   разделов и структуру YAML), не изобретая её заново.
+3. Если менялись файлы в `references/` навыка, пересоберите инструкцию заново:
 
    ```
-   sh build/build-chatgpt.sh
+   sh build/build.sh product-vision-interview
    ```
 
-   Результат — `build/chatgpt-instructions.md`; он коммитится в репозиторий,
-   чтобы владельцы продукта получали его уже готовым, без сборки на своей
-   стороне.
+   Результат — `build/product-vision-interview/chatgpt-instructions.md`; он
+   коммитится в репозиторий, чтобы владельцы ролей получали его уже готовым,
+   без сборки на своей стороне.
+
+**Один файл сборки на роль.** У каждого навыка своя сборка в
+`build/<навык>/chatgpt-instructions.md`. Объединять роли в один файл нельзя:
+плоская инструкция не имеет прогрессивного раскрытия, и модель, видящая две
+роли в одном тексте, дрейфует между ними. В проект ChatGPT кладётся сборка
+ровно одной роли.
+
+Если менялись общие справочники в `plugins/sigma-mes-skills/shared/references/`,
+сначала разложите их по навыкам и проверьте копии:
+
+```
+sh build/sync-shared.sh
+sh build/check.sh
+```
+
+## Переход с product-vision-interview 0.4.0
+
+В версии 0.5.0 плагин переименован: был `product-vision-interview`, стал
+`sigma-mes-skills`. Причина — плагин рассчитан на несколько навыков ролей, а
+не на один; имя плагина перестало совпадать с именем навыка.
+
+1. Удалите старый плагин: `/plugin uninstall product-vision-interview@sigma-mes-methodology`.
+2. Обновите маркетплейс: `/plugin marketplace update sigma-mes-methodology`.
+3. Установите новый: `/plugin install sigma-mes-skills@sigma-mes-methodology`.
+
+**Имя навыка и команда не изменились.** Навык по-прежнему называется
+`product-vision-interview`, команда `/product-vision-interview` работает как
+раньше, девять разделов описания и форма результата те же. Изменилась
+упаковка, а не методика.
+
+Если плагин подключался командным `.claude/settings.json` (путь 2), замените
+в нём ключ `"product-vision-interview@sigma-mes-methodology"` на
+`"sigma-mes-skills@sigma-mes-methodology"`.
+
+Сборка для ChatGPT переехала из `build/` в `build/product-vision-interview/`:
+старый файл `build/chatgpt-instructions.md` удалён, актуальный —
+`build/product-vision-interview/chatgpt-instructions.md`.
 
 ## Как обновлять
 
 1. Поднять `version` в обоих манифестах: `.claude-plugin/marketplace.json`
-   и `plugins/product-vision-interview/.claude-plugin/plugin.json`.
-2. Запушить изменения в репозиторий маркетплейса.
-3. Пользователи выполняют `/plugin marketplace update`.
+   и `plugins/sigma-mes-skills/.claude-plugin/plugin.json`.
+2. Пересобрать инструкцию для ChatGPT: `sh build/build.sh product-vision-interview` —
+   версия попадает в шапку сборки из `plugin.json`.
+3. Запушить изменения в репозиторий маркетплейса.
+4. Пользователи выполняют `/plugin marketplace update`.
 
 **Предупреждение.** Без повышения `version` в обоих манифестах установленные
 у пользователей копии не обновятся, даже если содержимое навыка в
