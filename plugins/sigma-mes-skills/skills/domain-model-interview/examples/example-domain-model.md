@@ -306,7 +306,7 @@ terms:
     owner_role: ROLE-FUNCTIONAL-OWNER
     source: "со слов функционального владельца"
     term_status: approved
-    term_check_result: TERM_PASS
+    check_result: TERM_PASS
     formulated_by: "пользователь"
     part: terms
   - id: TC-102
@@ -317,7 +317,7 @@ terms:
     owner_role: ROLE-FUNCTIONAL-OWNER
     source: "извлечено из ST-022"
     term_status: candidate
-    term_check_result: TERM_CANDIDATE
+    check_result: TERM_CANDIDATE
     formulated_by: "ИИ"
     part: terms
 ```

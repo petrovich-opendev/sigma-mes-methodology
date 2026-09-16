@@ -84,7 +84,7 @@ terms: []
   #     # при заполненных definition, scope и owner_role и при авторе определения
   #     # «пользователь». Межмодульному термину и термину уровня Конституции этот
   #     # навык approved не ставит никогда.
-  #   term_check_result: TERM_PASS   # см. references/terms-registry.md
+  #   check_result: TERM_PASS   # см. references/terms-registry.md
   #   formulated_by: "пользователь"
   #   part: terms
 

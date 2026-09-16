@@ -123,7 +123,7 @@ term_candidates: []
   #     # извлечено из ST-NNN | ссылка на внешний обязательный источник с редакцией
   #   term_status: candidate            # candidate | approved | deprecated
   #     # продуктовый навык approved не ставит: термин утверждает владелец области
-  #   term_check_result: TERM_CANDIDATE # см. references/terms-registry.md
+  #   check_result: TERM_CANDIDATE # см. references/terms-registry.md
   #   section: 7                        # раздел, в котором термин впервые понадобился
 
 # --- Массив product_risks ---

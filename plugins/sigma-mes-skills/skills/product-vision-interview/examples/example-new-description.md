@@ -597,7 +597,7 @@ term_candidates:
     owner_role: "не определено"
     source: "со слов пользователя"
     term_status: candidate
-    term_check_result: TERM_CANDIDATE
+    check_result: TERM_CANDIDATE
     section: 7
 
 product_risks:
