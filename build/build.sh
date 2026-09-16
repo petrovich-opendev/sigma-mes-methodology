@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Собирает платформонезависимую инструкцию по ОДНОМУ навыку.
+# Зависимости — оболочка и базовые утилиты: dirname, sed, cat, head, mkdir, mv, rm.
 #
 #   sh build/build.sh product-vision-interview
 #
