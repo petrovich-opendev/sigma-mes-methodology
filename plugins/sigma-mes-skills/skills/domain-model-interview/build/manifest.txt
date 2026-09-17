@@ -4,6 +4,8 @@ statuses
 terms-registry
 description-schema
 domain-schema
+research-schema
+screens-schema
 gate-conclusion
 gate-decision
 role-answer
