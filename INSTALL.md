@@ -85,7 +85,9 @@ claude plugin validate ./plugins/sigma-mes-skills
 2. Приложите пустые шаблоны как knowledge-файлы — по ним ChatGPT воспроизводит
    форму результата, не изобретая её заново. Шаблоны результата лежат в
    `templates/` соответствующего навыка: `description.md` и `description.yaml` у
-   продуктового, `domain.md` и `domain.yaml` у функционального владельца. Шаблоны
+   продуктового, `domain.md` и `domain.yaml` у функционального владельца, а для его
+   режимов обзора практик и концепта — ещё `research.md`/`research.yaml` и
+   `screens.md`/`screens.yaml`. Шаблоны
    гейтовых документов общие и лежат в `plugins/sigma-mes-skills/shared/templates/`:
    заключение нужно функциональному владельцу, запись решения — продуктовому навыку
    в режиме решения по GATE-01.
