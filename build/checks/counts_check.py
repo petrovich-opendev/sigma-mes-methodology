@@ -56,7 +56,25 @@ for man in sorted(glob.glob("plugins/sigma-mes-skills/skills/*/build/manifest.tx
         err.append((skill, "в сборке сказано «из %s», а справочников %d" % (stated, n)))
     print("%s: справочников %d, разделов в сборке %d, в тексте «%s»" % (skill, n, marks, stated))
 
+# --- дубликаты номеров заголовков ---
+# Сценарий, добавленный в конец файла, легко получает номер, который уже занят:
+# именно так в domain-boundary-responses.md появились два «Сценария 13».
+import glob as _glob
+from collections import Counter as _Counter
+
+dup_err = []
+for f in _glob.glob("plugins/sigma-mes-skills/skills/*/references/*.md") + \
+         _glob.glob("tests/*/*.md") + _glob.glob("OPEN-QUESTIONS.md"):
+    nums = re.findall(r"^##\s*(?:Сценарий\s*)?(\d+)\.(?!\d)", open(f, encoding="utf-8").read(), re.M)
+    for num, cnt in _Counter(nums).items():
+        if cnt > 1:
+            dup_err.append((f, "номер %s встречается %d раза" % (num, cnt)))
+
+print("дубликатов номеров заголовков:", len(dup_err))
+for e in dup_err:
+    print("   ", e)
+
 print("расхождений чисел:", len(err))
 for e in err:
     print("   ", e)
-sys.exit(1 if err else 0)
+sys.exit(1 if (err or dup_err) else 0)

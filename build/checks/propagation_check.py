@@ -30,6 +30,18 @@ RULES = [
         ["plugins/sigma-mes-skills/shared/references/research-schema.md",
          "plugins/sigma-mes-skills/skills/domain-model-interview/references/domain-method.md"],
     ),
+    (
+        "перечень несделанного называет проектные решения (вопрос 17)",
+        r"За пределами предметной модели|сознательно не передаётся|not_transferred|что не сделано и кем делается",
+        r"вопрос[ау]? 17",
+        ["plugins/sigma-mes-skills/skills/domain-model-interview/references/domain-method.md",
+         "plugins/sigma-mes-skills/skills/domain-model-interview/SKILL.md",
+         "plugins/sigma-mes-skills/skills/domain-model-interview/templates/domain-template.md",
+         "plugins/sigma-mes-skills/skills/domain-model-interview/examples/example-domain-model.md",
+         "plugins/sigma-mes-skills/shared/references/architect-handoff.md",
+         "plugins/sigma-mes-skills/skills/product-vision-interview/references/core-method.md",
+         "plugins/sigma-mes-skills/skills/product-vision-interview/examples/example-full-cycle.md"],
+    ),
 ]
 
 err = []
@@ -40,10 +52,15 @@ for name, marker, required, files in RULES:
         except FileNotFoundError:
             err.append((f, f"{name}: файла нет"))
             continue
-        if not re.search(marker, text):
+        hits = list(re.finditer(marker, text, re.I))
+        if not hits:
             err.append((f, f"{name}: маркер правила не найден — проверка могла устареть"))
             continue
-        if not re.search(required, text):
+        # Продолжение ищем рядом с маркером, а не где угодно в файле: упоминание той же
+        # фразы в другом разделе не должно маскировать пропуск в самом перечне. Правило
+        # считается выполненным, если продолжение нашлось хотя бы у одного вхождения.
+        ok = any(re.search(required, text[h.start():h.start() + 2500], re.I) for h in hits)
+        if not ok:
             err.append((f, f"{name}: правило упомянуто, но его продолжение отсутствует"))
         else:
             print("ok  %-70s %s" % (name, f.split("/")[-1]))
