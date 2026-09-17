@@ -99,6 +99,7 @@ build/
   build.sh                               — сборка инструкции на один навык
   sync-shared.sh                         — раскладка общих справочников по навыкам
   check.sh                               — копии не разошлись с источником
+  checks/run-all.sh                      — все проверки согласованности методики
   product-vision-interview/chatgpt-instructions.md
   domain-model-interview/chatgpt-instructions.md
 tests/
