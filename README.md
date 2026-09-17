@@ -107,7 +107,7 @@ tests/
     scenarios.md                         — тридцать пять сценариев проверки
     expected-behaviour.md                — ожидаемое поведение и метрики прогона
   domain-model-interview/
-    scenarios.md                         — тридцать пять сценариев проверки
+    scenarios.md                         — тридцать шесть сценариев проверки
     expected-behaviour.md                — ожидаемое поведение
 docs/
   new-skill-checklist.md                 — что обязан соблюдать новый навык
