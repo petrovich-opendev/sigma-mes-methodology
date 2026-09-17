@@ -187,6 +187,17 @@ objects:
     related: []
     terms: []
     part: objects
+
+role_requests:
+  - id: RR-102
+    role: ROLE-ARCHITECT
+    module: "вне схемы M01–M13"
+    text: "Подтвердить, что состояние подключённого сервиса ведёт портал."
+    blocks: "Поле authoritative_state_source объекта OBJ-001."
+    if_declined: "Источник состояния пересматривается вместе с владельцем смысла."
+    linked_statement: OBJ-001
+    confirmation_status: "ответ роли зафиксирован"
+    source: "docs/product/sigmaportal/answers/RR-102-ROLE-ARCHITECT.yaml"
 ```
 
 ## Шаг 6. Повторное заключение и решение GO
