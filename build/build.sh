@@ -62,10 +62,15 @@ SED_SCRIPT="$OUT.sed"
 
 VERSION=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" | head -1)
 
+# Число справочников берётся из манифеста, а не пишется в преамбуле руками:
+# написанное руками отстаёт молча — так фраза «собран из десяти справочников»
+# пережила четыре пополнения манифеста.
+REFCOUNT=$(grep -c . "$MANIFEST")
+
 mkdir -p "$OUT_DIR"
 
 # (1) Преамбула навыка с подстановкой версии плагина.
-sed "s/{{VERSION}}/$VERSION/g" "$PREAMBLE" > "$OUT"
+sed -e "s/{{VERSION}}/$VERSION/g" -e "s/{{REFCOUNT}}/$REFCOUNT/g" "$PREAMBLE" > "$OUT"
 
 # (2) Жёсткие запреты — до любого справочника.
 printf '\n' >> "$OUT"
@@ -107,4 +112,4 @@ EXTRA
 sed -f "$SED_SCRIPT" "$OUT" > "$TMP" && mv "$TMP" "$OUT"
 rm -f "$SED_SCRIPT"
 
-echo "Готово: $OUT (версия $VERSION)"
+echo "Готово: $OUT (версия $VERSION, справочников $REFCOUNT)"
