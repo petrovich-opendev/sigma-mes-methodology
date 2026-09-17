@@ -50,3 +50,6 @@ print("невалидных:", len(bad), bad)
 print("положений «утверждено ответственной ролью»:", approved, "| без approved_by:", len(missing), missing)
 print("approved_by при другом статусе:", len(stray), stray)
 print("approved-термины без definition/scope/owner_role:", len(approved_terms_bad), approved_terms_bad)
+
+import sys
+sys.exit(1 if (bad or missing or stray or approved_terms_bad) else 0)

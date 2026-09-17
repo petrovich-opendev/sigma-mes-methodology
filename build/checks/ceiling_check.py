@@ -35,7 +35,8 @@ print("нарушений потолка ИИ-формулировки:", len(er
 for f, ln, st, fl in err:
     print(f"    {f}:{ln} «{st}» при formulated_by ИИ (строка {fl})")
 
-stale = subprocess.run(["git", "grep", "-n", "-i", "обоих документов"], capture_output=True, text=True).stdout.strip()
+stale = subprocess.run(["git", "grep", "-n", "-i", "обоих документов",
+                        "--", ":!build/checks/"], capture_output=True, text=True).stdout.strip()
 stale = [l for l in stale.split("\n") if l and "chatgpt-instructions.md" not in l]
 print("упоминаний «обоих документов»:", len(stale))
 for l in stale:

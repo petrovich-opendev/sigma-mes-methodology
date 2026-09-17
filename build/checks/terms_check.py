@@ -32,3 +32,6 @@ print("записей терминов в примерах и справочни
 print("без обязательных полей:", len(bad))
 for b in bad:
     print("   ", b)
+
+import sys
+sys.exit(1 if bad else 0)
