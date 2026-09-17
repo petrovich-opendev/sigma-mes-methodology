@@ -12,7 +12,9 @@ request_id: RR-001                 # обязателен: ответ без а�
                                    # связанного положения); OQ-… — ответ на открытый
                                    # вопрос (закрывает сам вопрос). Роль сверяется
                                    # с полем role запроса либо addressed_to вопроса
-request_document: "description.yaml версии <N>"   # либо "domain.yaml версии <N>"
+request_document: "description.yaml версии <N>"   # либо "domain.yaml версии <N>",
+                                                  # "research.yaml версии <N>",
+                                                  # "screens.yaml версии <N>"
 
 role: ROLE-ARCHITECT               # у запроса роли — тот же код, что в его поле role;
                                    # у открытого вопроса — тот же, что в его addressed_to
