@@ -36,6 +36,7 @@ run "Состав режимов: SKILL.md против сборки" python3 bu
 run "Состав разделов проекции против шаблона" python3 build/checks/parts_check.py
 run "Реплики-триггеры: запрет против тела" python3 build/checks/triggers_check.py
 run "Распространение правил по носителям" python3 build/checks/propagation_check.py
+run "Самодостаточность собранных инструкций" python3 build/checks/selfcontained_check.py
 run "Обязательные поля записи термина" python3 build/checks/terms_check.py
 run "Правило сверки термина с реестром" python3 build/checks/rule_check.py
 
