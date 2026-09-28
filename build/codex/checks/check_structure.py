@@ -262,13 +262,25 @@ if leak:
     problems.append("строка, похожая на токен: %s" % leak.group(1)[:12])
 check("S-11", not problems, "; ".join(problems))
 
-# S-12. Версия 0.10.0 не тронута
+# S-12. Версия 0.10.x не тронута
+#
+# В пакете проверка сравнивала с HEAD, потому что коммит не делался. После решения владельца
+# процесса перевести main на 0.11.0 коммит делается, и сравнение с HEAD стало бы вакуумным:
+# оно всегда пусто. База сравнения — тег предыдущего выпуска v0.10.1, а при его отсутствии
+# сохраняется прежнее поведение.
+OLD_PATHS = ["plugins/sigma-mes-skills", ".claude-plugin", "build/product-vision-interview",
+             "build/domain-model-interview", "build/check.sh", "build/build.sh",
+             "build/sync-shared.sh", "build/checks", "tests", "docs",
+             "README.md", "INSTALL.md", "OPEN-QUESTIONS.md", "LICENSE"]
 try:
-    diff = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", "HEAD"],
+    tag = subprocess.run(
+        ["git", "-C", ROOT, "rev-parse", "--verify", "--quiet", "v0.10.1^{commit}"],
+        capture_output=True, text=True).stdout.strip()
+    base = tag or "HEAD"
+    diff = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", base, "--"] + OLD_PATHS,
                           capture_output=True, text=True, check=True).stdout.split()
-    allowed = {".agents/plugins/marketplace.json"}
-    unexpected = [f for f in diff if f not in allowed]
-    check("S-12", not unexpected, "изменены отслеживаемые файлы: " + ", ".join(unexpected))
+    check("S-12", not diff,
+          "относительно %s изменены файлы прежней версии: %s" % (base[:8], ", ".join(diff)))
 except Exception as exc:  # noqa: BLE001
     check("S-12", False, "git diff не выполнен: %s" % exc)
 
