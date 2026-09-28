@@ -9,6 +9,10 @@
 # Зависимости: python3, PyYAML, jsonschema. Установка:
 #   python3 -m pip install --user PyYAML jsonschema
 # В системах с PEP 668 (externally managed environment) добавьте --break-system-packages.
+#
+# Нужен полный клон: проверка S-12 сравнивает файлы прежней версии с тегом v0.10.1.
+# В поверхностном клоне (--depth 1) тега нет, и S-12 честно падает с подсказкой
+# git fetch --tags --unshallow, а не отчитывается OK, ничего не проверив.
 
 set -e
 

@@ -273,14 +273,22 @@ OLD_PATHS = ["plugins/sigma-mes-skills", ".claude-plugin", "build/product-vision
              "build/sync-shared.sh", "build/checks", "tests", "docs",
              "README.md", "INSTALL.md", "OPEN-QUESTIONS.md", "LICENSE"]
 try:
-    tag = subprocess.run(
+    base = subprocess.run(
         ["git", "-C", ROOT, "rev-parse", "--verify", "--quiet", "v0.10.1^{commit}"],
         capture_output=True, text=True).stdout.strip()
-    base = tag or "HEAD"
-    diff = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", base, "--"] + OLD_PATHS,
-                          capture_output=True, text=True, check=True).stdout.split()
-    check("S-12", not diff,
-          "относительно %s изменены файлы прежней версии: %s" % (base[:8], ", ".join(diff)))
+    if not base:
+        # Молчаливого отката на HEAD здесь быть не должно: в поверхностном клоне
+        # (git clone --depth 1) тега нет, сравнение с HEAD всегда пусто, и проверка
+        # отрапортовала бы OK, не проверив ничего.
+        check("S-12", False,
+              "нет тега v0.10.1 — базы сравнения. Проверка неприменима в поверхностном "
+              "клоне: выполните git fetch --tags --unshallow")
+    else:
+        diff = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", base, "--"] + OLD_PATHS,
+                              capture_output=True, text=True, check=True).stdout.split()
+        check("S-12", not diff,
+              "относительно v0.10.1 (%s) изменены файлы прежней версии: %s"
+              % (base[:8], ", ".join(diff)))
 except Exception as exc:  # noqa: BLE001
     check("S-12", False, "git diff не выполнен: %s" % exc)
 
