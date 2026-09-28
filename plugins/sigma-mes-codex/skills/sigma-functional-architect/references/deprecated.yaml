@@ -1,0 +1,18 @@
+# Выведенные из употребления коды Конституции 0.9 (раздел 4.3, приложение A.5).
+# Единственный файл плагина, где эти коды допустимы (D-16).
+roles:
+  - id: ROLE-FUNCTIONAL-OWNER
+    name: Функциональный владелец
+    replacement: ROLE-FUNCTIONAL-ARCHITECT
+  - id: ROLE-ARCHITECT
+    name: Архитектор решения
+    replacement: ROLE-TECHNICAL-ARCHITECT
+terms:
+  - id: TERM-ARCHITECTURE-DECISION
+    name: Архитектурное решение
+    replacement: TERM-TECHNICAL-ARCHITECTURE-DECISION
+    reason: После введения функциональной архитектуры наименование «архитектурное решение» неоднозначно.
+  - id: TERM-DESIGN-DECISIONS
+    name: Проектные решения
+    replacement: TERM-FUNCTIONAL-ARCHITECTURE и TERM-TECHNICAL-ARCHITECTURE
+    reason: Содержание разделено между функциональной и технической архитектурой, а связь требования с реализацией и проверкой задают RULE-REQ-001, RULE-ACCEPTANCE-002 и раздел 3.1.

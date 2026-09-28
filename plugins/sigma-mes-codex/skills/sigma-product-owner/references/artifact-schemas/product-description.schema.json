@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "product-description.schema.json",
+  "title": "Шапка артефакта product-description",
+  "description": "Шапка артефакта «product-description». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml.",
+  "type": "object",
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "description": "имя типа из этого файла",
+      "const": "product-description"
+    },
+    "artifact_id": {
+      "type": "string",
+      "description": "по id_pattern типа",
+      "pattern": "^PD-[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string",
+      "description": "номер редакции проекта материала, например 0.1"
+    },
+    "ai_assistance": {
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "type": "string",
+          "const": "sigma-mes-skills"
+        },
+        "plugin_version": {
+          "type": "string",
+          "const": "0.11.0"
+        },
+        "constitution_version": {
+          "type": "string",
+          "description": "из шага S4"
+        },
+        "active_role": {
+          "type": "string",
+          "pattern": "^ROLE-[A-Z-]+$"
+        },
+        "prepared_by_ai": {
+          "type": "boolean",
+          "const": true
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "description": "путь@редакция или коммит"
+              },
+              "element": {
+                "type": "string",
+                "description": "RULE-…, TERM-…, раздел, идентификатор артефакта"
+              }
+            },
+            "required": [
+              "ref",
+              "element"
+            ]
+          },
+          "minItems": 1
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "пустой список допустим; фраза «Основания в действующих материалах нет: …»"
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "required_role": {
+              "type": "string",
+              "pattern": "^ROLE-[A-Z-]+$"
+            },
+            "recorded": {
+              "type": "boolean"
+            },
+            "statement": {
+              "type": "string",
+              "description": "дословная цитата реплики; обязательна, если recorded = true"
+            },
+            "date": {
+              "type": "string",
+              "description": "ГГГГ-ММ-ДД; обязательна, если recorded = true"
+            }
+          },
+          "required": [
+            "required_role",
+            "recorded"
+          ],
+          "if": {
+            "properties": {
+              "recorded": {
+                "const": true
+              }
+            },
+            "required": [
+              "recorded"
+            ]
+          },
+          "then": {
+            "required": [
+              "statement",
+              "date"
+            ]
+          }
+        }
+      },
+      "required": [
+        "plugin",
+        "plugin_version",
+        "constitution_version",
+        "active_role",
+        "prepared_by_ai",
+        "basis",
+        "gaps",
+        "approval"
+      ]
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "in_scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "module_structure": {
+      "type": "string",
+      "enum": [
+        "модули M01–M13",
+        "иное деление, указанное владельцем продукта",
+        "продукт не делится на модули"
+      ]
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "critical_scenarios": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "end_to_end_result": {
+      "type": "string",
+      "description": "производственный результат сквозного пути"
+    },
+    "term_ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string"
+          },
+          "check": {
+            "type": "string",
+            "enum": [
+              "TERM_PASS",
+              "TERM_ALIAS",
+              "TERM_NOT_DEFINED",
+              "TERM_AMBIGUOUS",
+              "TERM_SCOPE_MISMATCH",
+              "TERM_DEPRECATED",
+              "TERM_CANDIDATE"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "change": {
+      "type": "object",
+      "properties": {},
+      "description": "режим PO-2; поля value_change, scope_change, affected_scenarios, risks"
+    }
+  },
+  "required": [
+    "artifact_type",
+    "artifact_id",
+    "title",
+    "product_id",
+    "revision",
+    "ai_assistance",
+    "purpose",
+    "value",
+    "in_scope",
+    "out_of_scope",
+    "module_structure",
+    "participants",
+    "critical_scenarios",
+    "end_to_end_result",
+    "term_ambiguities",
+    "risks"
+  ],
+  "additionalProperties": true
+}

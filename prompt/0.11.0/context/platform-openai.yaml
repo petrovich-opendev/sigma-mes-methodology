@@ -1,0 +1,64 @@
+# Формат пакета плагина OpenAI и настройка MCP. Проверено 28.09.2026 по документации OpenAI.
+sources:
+  - https://developers.openai.com/plugins/build/plugins   # Package your plugin
+  - https://learn.chatgpt.com/docs/extend/mcp             # Model Context Protocol (Codex)
+  - https://developers.openai.com/codex/skills            # Agent Skills
+
+plugin_package:
+  root_manifest:
+    file: plugin.json
+    schema: https://agent-plugins.org/schemas/1.0.0/plugin.schema.json
+    required_fields: [$schema, name]
+    recommended_fields: [version, description, author, repository, license, keywords]
+    name_rule: стабильное имя в kebab-case; используется как идентификатор и пространство имён
+  openai_extension:
+    location: plugin.json → extensions."com.openai"
+    fields_used_in_this_plugin:
+      interface:
+        displayName: обязательно
+        shortDescription: обязательно
+        longDescription: обязательно
+        developerName: обязательно
+        category: Productivity
+        capabilities: ["Read", "Write"]
+        defaultPrompt: список стартовых подсказок
+  skills:
+    location: skills/<skill-name>/SKILL.md
+    discovery: переносимый пакет находит навыки в skills/ без поля в манифесте
+    skill_frontmatter_required: [name, description]
+    progressive_disclosure: >
+      Агент сначала видит только name, description и путь; полный SKILL.md загружается,
+      когда агент решает применить навык. Поэтому description должен точно описывать,
+      когда навык применять.
+  compatibility_manifest:
+    file: .codex-plugin/plugin.json
+    use_in_this_plugin: не создаётся (D-01)
+  paths_rule: пути в манифесте начинаются с ./, остаются внутри плагина, без ..
+
+marketplace:
+  repo_file: .agents/plugins/marketplace.json
+  entry_required_fields: [name, source, policy.installation, policy.authentication, category]
+  source_path_rule: ./-префикс, относительно корня маркетплейса, внутри корня
+  add_from_cli:
+    - codex plugin marketplace add <HTTPS Git URL репозитория>
+    - codex plugin marketplace add <HTTPS Git URL> --ref <ветка или тег>
+  note: >
+    Поддерживаются GitHub-сокращения, HTTP(S)- и SSH-адреса Git, локальные каталоги.
+    Установка и проверка локального плагина — в десктопном приложении ChatGPT (Plugins Directory),
+    после изменения — перезапуск приложения.
+  install_cache: ~/.codex/plugins/cache/<marketplace>/<plugin>/<version>/
+
+mcp:
+  shared_config: ~/.codex/config.toml (общая для десктопного приложения, Codex CLI и IDE)
+  streamable_http_options:
+    url: обязательно
+    bearer_token_env_var: имя переменной окружения с токеном для заголовка Authorization
+    default_tools_approval_mode: [auto, prompt, writes, approve]   # writes — подтверждение для инструментов не только для чтения
+    enabled_tools: список разрешённых инструментов
+    required: true — запуск падает, если сервер не поднялся
+  plugin_bundled_servers: >
+    Серверы, поставляемые в плагине, описываются в mcp.json; из авторизации для них документирована
+    только OAuth. Поэтому сервер реестра терминов в плагин не встраивается (D-03).
+  chat_mode_limit: >
+    Обычный режим чата подключается к MCP из облака и не видит серверы в частной сети;
+    режимы Codex и Work в десктопном приложении работают на локальной машине.

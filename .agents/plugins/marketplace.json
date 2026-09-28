@@ -1,0 +1,12 @@
+{
+  "name": "sigma-mes",
+  "interface": { "displayName": "СИГМА.MES+" },
+  "plugins": [
+    {
+      "name": "sigma-mes-skills",
+      "source": { "source": "local", "path": "./plugins/sigma-mes-codex" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

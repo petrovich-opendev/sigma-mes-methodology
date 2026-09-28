@@ -1,0 +1,19 @@
+built_for:
+  plugin: sigma-mes-skills
+  plugin_version: 0.11.0
+  constitution: "0.9"
+  acceptance_regulation: "0.1"
+allowed_codes:
+  gate_decisions: [GO, REWORK, STOP]
+  gate_decisions_gate05_extra: [RETIRE]
+  independent_reviewer: [PASS, REWORK, STOP-RECOMMENDED]
+  test_result: [PASS, FAIL]
+  acceptance_outcomes: [ACCEPTED, ACCEPTED_WITH_REMARKS, RETURNED, REJECTED_ARCHITECTURALLY]
+  term_status: [candidate, approved, deprecated]
+  term_check: [TERM_PASS, TERM_ALIAS, TERM_NOT_DEFINED, TERM_AMBIGUOUS, TERM_SCOPE_MISMATCH, TERM_DEPRECATED, TERM_CANDIDATE]
+roles_in_plugin:
+  - {id: ROLE-PRODUCT-OWNER, skill: sigma-product-owner}
+  - {id: ROLE-FUNCTIONAL-ARCHITECT, skill: sigma-functional-architect}
+  - {id: ROLE-TECHNICAL-ARCHITECT, skill: sigma-technical-architect}
+mcp:
+  terms_server: sigma_terms

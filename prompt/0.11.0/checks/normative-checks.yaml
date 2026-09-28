@@ -1,0 +1,78 @@
+# Нормативные проверки плагина. Реализуются в build/codex/checks/check_normative.py.
+# Источник кодов — constitution.extract.yaml (раздел codes) и acceptance-regulation.extract.yaml.
+
+allowed_codes:
+  gate_decisions: [GO, REWORK, STOP]
+  gate_decisions_gate05_extra: [RETIRE]
+  independent_reviewer: [PASS, REWORK, STOP-RECOMMENDED]
+  test_result: [PASS, FAIL]
+  acceptance_outcomes: [ACCEPTED, ACCEPTED_WITH_REMARKS, RETURNED, REJECTED_ARCHITECTURALLY]
+  term_status: [candidate, approved, deprecated]
+  term_check: [TERM_PASS, TERM_ALIAS, TERM_NOT_DEFINED, TERM_AMBIGUOUS, TERM_SCOPE_MISMATCH, TERM_DEPRECATED, TERM_CANDIDATE]
+
+id_checks:
+  # Каждый идентификатор, найденный в файлах плагина по шаблону, должен существовать в извлечениях.
+  patterns:
+    RULE: '\bRULE-[A-Z]+(?:-[A-Z]+)*-\d{3}\b'
+    ROLE: '\bROLE-[A-Z]+(?:-[A-Z]+)*\b'
+    TERM: '\bTERM-[A-Z]+(?:-[A-Z]+)*\b'
+    GATE: '\bGATE-0[1-6]\b'
+    STAGE: '\bSTAGE-0[1-6]\b'
+    ACC: '\bACC-(?:LEVEL|PRINCIPLE|STEP)-\d+\b'
+  exceptions:
+    - 'TERM_*'                 # коды проверки терминов содержат подчёркивание, шаблон TERM- их не задевает
+  scope: [plugins/sigma-mes-skills/**, plugin-src/shared/**]
+
+deprecated:
+  codes: [ROLE-FUNCTIONAL-OWNER, ROLE-ARCHITECT, TERM-ARCHITECTURE-DECISION, TERM-DESIGN-DECISIONS]
+  allowed_only_in: [plugin-src/shared/deprecated.yaml, plugins/sigma-mes-skills/skills/*/references/deprecated.yaml, plugin-src/shared/constitution.extract.yaml, plugins/sigma-mes-skills/skills/*/references/constitution.extract.yaml]
+  also_forbidden_words: ['функциональный владелец', 'ROLE-FUNCTIONAL-OWNER']
+
+required_in_every_skill:
+  # Строки, которые должны присутствовать в каждом SKILL.md (проверка по вхождению подстроки).
+  - references/session-protocol.md
+  - 'Активная роль:'
+  - RULE-AI-001
+  - RULE-AI-002
+  - Перед выдачей
+  - Передать
+
+forbidden_in_skills:
+  # Формулировки, которые означали бы решение от имени ИИ или запись в реестр.
+  - 'присвой статус approved'
+  - 'запиши GO без'
+  - 'create_term'
+  - 'update_term'
+
+fa_technical_markers:
+  # Предупреждение (не ошибка): слова способа реализации в функциональной архитектуре вне раздела «Передать».
+  - REST
+  - gRPC
+  - SOAP
+  - JSON
+  - XML
+  - HTTP
+  - SQL
+  - PostgreSQL
+  - MS SQL
+  - RabbitMQ
+  - Kafka
+  - Redis
+  - Docker
+  - Kubernetes
+  - Spring
+  - React
+  - OPC UA
+  - MQTT
+  - Modbus
+  - микросервис
+  - база данных
+  - таблица БД
+  - первичный ключ
+  - очередь сообщений
+  - API
+
+decision_integrity:
+  - в артефакте gate-decision поле decision = GO недопустимо, если связанный gate-package имеет go_excluded = true
+  - в артефакте gate-decision decision = RETIRE допустимо только при gate = GATE-05
+  - любой артефакт с approval.recorded = true обязан иметь statement и date

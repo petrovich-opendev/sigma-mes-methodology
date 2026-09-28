@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "technical-constraint.schema.json",
+  "title": "Шапка артефакта technical-constraint",
+  "description": "Шапка артефакта «technical-constraint». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml; без external_source_ref артефакт не создаётся.",
+  "type": "object",
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "description": "имя типа из этого файла",
+      "const": "technical-constraint"
+    },
+    "artifact_id": {
+      "type": "string",
+      "description": "по id_pattern типа",
+      "pattern": "^TC-\\d{3,}$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string",
+      "description": "номер редакции проекта материала, например 0.1"
+    },
+    "ai_assistance": {
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "type": "string",
+          "const": "sigma-mes-skills"
+        },
+        "plugin_version": {
+          "type": "string",
+          "const": "0.11.0"
+        },
+        "constitution_version": {
+          "type": "string",
+          "description": "из шага S4"
+        },
+        "active_role": {
+          "type": "string",
+          "pattern": "^ROLE-[A-Z-]+$"
+        },
+        "prepared_by_ai": {
+          "type": "boolean",
+          "const": true
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "description": "путь@редакция или коммит"
+              },
+              "element": {
+                "type": "string",
+                "description": "RULE-…, TERM-…, раздел, идентификатор артефакта"
+              }
+            },
+            "required": [
+              "ref",
+              "element"
+            ]
+          },
+          "minItems": 1
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "пустой список допустим; фраза «Основания в действующих материалах нет: …»"
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "required_role": {
+              "type": "string",
+              "pattern": "^ROLE-[A-Z-]+$"
+            },
+            "recorded": {
+              "type": "boolean"
+            },
+            "statement": {
+              "type": "string",
+              "description": "дословная цитата реплики; обязательна, если recorded = true"
+            },
+            "date": {
+              "type": "string",
+              "description": "ГГГГ-ММ-ДД; обязательна, если recorded = true"
+            }
+          },
+          "required": [
+            "required_role",
+            "recorded"
+          ],
+          "if": {
+            "properties": {
+              "recorded": {
+                "const": true
+              }
+            },
+            "required": [
+              "recorded"
+            ]
+          },
+          "then": {
+            "required": [
+              "statement",
+              "date"
+            ]
+          }
+        }
+      },
+      "required": [
+        "plugin",
+        "plugin_version",
+        "constitution_version",
+        "active_role",
+        "prepared_by_ai",
+        "basis",
+        "gaps",
+        "approval"
+      ]
+    },
+    "statement": {
+      "type": "string"
+    },
+    "external_source_kind": {
+      "type": "string",
+      "enum": [
+        "заказчик",
+        "ИТ-специалисты заказчика",
+        "регулятор"
+      ]
+    },
+    "external_source_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact_type",
+    "artifact_id",
+    "title",
+    "product_id",
+    "revision",
+    "ai_assistance",
+    "statement",
+    "external_source_kind",
+    "external_source_ref"
+  ],
+  "additionalProperties": true
+}

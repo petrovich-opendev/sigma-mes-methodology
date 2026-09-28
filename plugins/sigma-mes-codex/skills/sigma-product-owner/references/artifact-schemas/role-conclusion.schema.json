@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "role-conclusion.schema.json",
+  "title": "Шапка артефакта role-conclusion",
+  "description": "Шапка артефакта «role-conclusion». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml; reviewer_result допустим только при role = ROLE-INDEPENDENT-REVIEWER.",
+  "type": "object",
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "description": "имя типа из этого файла",
+      "const": "role-conclusion"
+    },
+    "artifact_id": {
+      "type": "string",
+      "description": "по id_pattern типа",
+      "pattern": "^RC-GATE-0[1-6]-ROLE-[A-Z-]+-[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string",
+      "description": "номер редакции проекта материала, например 0.1"
+    },
+    "ai_assistance": {
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "type": "string",
+          "const": "sigma-mes-skills"
+        },
+        "plugin_version": {
+          "type": "string",
+          "const": "0.11.0"
+        },
+        "constitution_version": {
+          "type": "string",
+          "description": "из шага S4"
+        },
+        "active_role": {
+          "type": "string",
+          "pattern": "^ROLE-[A-Z-]+$"
+        },
+        "prepared_by_ai": {
+          "type": "boolean",
+          "const": true
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "description": "путь@редакция или коммит"
+              },
+              "element": {
+                "type": "string",
+                "description": "RULE-…, TERM-…, раздел, идентификатор артефакта"
+              }
+            },
+            "required": [
+              "ref",
+              "element"
+            ]
+          },
+          "minItems": 1
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "пустой список допустим; фраза «Основания в действующих материалах нет: …»"
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "required_role": {
+              "type": "string",
+              "pattern": "^ROLE-[A-Z-]+$"
+            },
+            "recorded": {
+              "type": "boolean"
+            },
+            "statement": {
+              "type": "string",
+              "description": "дословная цитата реплики; обязательна, если recorded = true"
+            },
+            "date": {
+              "type": "string",
+              "description": "ГГГГ-ММ-ДД; обязательна, если recorded = true"
+            }
+          },
+          "required": [
+            "required_role",
+            "recorded"
+          ],
+          "if": {
+            "properties": {
+              "recorded": {
+                "const": true
+              }
+            },
+            "required": [
+              "recorded"
+            ]
+          },
+          "then": {
+            "required": [
+              "statement",
+              "date"
+            ]
+          }
+        }
+      },
+      "required": [
+        "plugin",
+        "plugin_version",
+        "constitution_version",
+        "active_role",
+        "prepared_by_ai",
+        "basis",
+        "gaps",
+        "approval"
+      ]
+    },
+    "gate": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "questions_to_consider": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "provision": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    "reviewer_result": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "REWORK",
+        "STOP-RECOMMENDED"
+      ],
+      "description": "только для ROLE-INDEPENDENT-REVIEWER"
+    },
+    "conclusion_text": {
+      "type": "string",
+      "description": "для остальных ролей — текстом, без кода"
+    }
+  },
+  "required": [
+    "artifact_type",
+    "artifact_id",
+    "title",
+    "product_id",
+    "revision",
+    "ai_assistance",
+    "gate",
+    "role",
+    "questions_to_consider"
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,354 @@
+# Схемы артефактов sigma-mes-skills 0.11.0.
+# Исполнитель по каждому типу создаёт:
+#   plugin-src/shared/artifact-schemas/<тип>.schema.json — JSON Schema (draft 2020-12) YAML-шапки;
+#   plugin-src/shared/templates/<тип>.md — шаблон: шапка с пустыми значениями + разделы тела.
+# Правила чтения: required: true — поле обязательно; enum — только перечисленные значения;
+# min_items — минимальное число элементов; ref_pattern — регулярное выражение ссылки.
+# В описании элемента списка (item) строка вида '[a, b, c]' означает enum из перечисленных значений;
+# слово string, list, boolean — тип значения.
+# Все коды берутся только из checks/normative-checks.yaml (allowed_codes).
+
+common:
+  frontmatter:
+    artifact_type: {type: string, required: true, note: "имя типа из этого файла"}
+    artifact_id: {type: string, required: true, note: "по id_pattern типа"}
+    title: {type: string, required: true}
+    product_id: {type: string, required: true}
+    revision: {type: string, required: true, note: "номер редакции проекта материала, например 0.1"}
+    ai_assistance:
+      required: true
+      fields:
+        plugin: {type: string, required: true, const: sigma-mes-skills}
+        plugin_version: {type: string, required: true, const: 0.11.0}
+        constitution_version: {type: string, required: true, note: "из шага S4"}
+        active_role: {type: string, required: true, ref_pattern: '^ROLE-[A-Z-]+$'}
+        prepared_by_ai: {type: boolean, required: true, const: true}
+        basis:
+          type: list
+          required: true
+          min_items: 1
+          item: {ref: {type: string, required: true, note: "путь@редакция или коммит"}, element: {type: string, required: true, note: "RULE-…, TERM-…, раздел, идентификатор артефакта"}}
+        gaps: {type: list of string, required: true, note: "пустой список допустим; фраза «Основания в действующих материалах нет: …»"}
+        approval:
+          required: true
+          fields:
+            required_role: {type: string, required: true, ref_pattern: '^ROLE-[A-Z-]+$'}
+            recorded: {type: boolean, required: true}
+            statement: {type: string, required: false, note: "дословная цитата реплики; обязательна, если recorded = true"}
+            date: {type: string, required: false, note: "ГГГГ-ММ-ДД; обязательна, если recorded = true"}
+  body_sections_always:
+    - Передать           # услышанное вне полномочий роли: пункт, роль-получатель, правило
+    - Основания и пробелы
+  validation:
+    - если approval.recorded = true, то statement и date обязательны
+    - в тексте нет кодов из deprecated.yaml
+
+types:
+
+  product-description:
+    role: ROLE-PRODUCT-OWNER
+    path_key: product_description
+    id_pattern: '^PD-[a-z0-9-]+$'
+    basis_rules: [RULE-PRODUCT-FRAME-001, RULE-PRODUCT-FRAME-002]
+    fields:
+      purpose: {type: string, required: true}
+      value: {type: string, required: true}
+      in_scope: {type: list of string, required: true, min_items: 1}
+      out_of_scope: {type: list of string, required: true, min_items: 1}
+      module_structure: {type: string, required: true, enum_text: ['модули M01–M13', 'иное деление, указанное владельцем продукта', 'продукт не делится на модули']}
+      participants: {type: list of string, required: true}
+      critical_scenarios: {type: list of string, required: true, min_items: 1}
+      end_to_end_result: {type: string, required: true, note: "производственный результат сквозного пути"}
+      term_ambiguities: {type: list, required: true, item: {term: string, check: '[TERM_PASS, TERM_ALIAS, TERM_NOT_DEFINED, TERM_AMBIGUOUS, TERM_SCOPE_MISMATCH, TERM_DEPRECATED, TERM_CANDIDATE]'}}
+      risks: {type: list of string, required: true}
+      change: {type: object, required: false, note: "режим PO-2; поля value_change, scope_change, affected_scenarios, risks"}
+    body_sections: [Назначение, Ценность, Границы, Участники, Критичные сценарии, Термины, Риски, Изменение, Передать, Основания и пробелы]
+
+  enterprise-variant:
+    role: ROLE-PRODUCT-OWNER
+    path_key: enterprise_variants
+    id_pattern: '^EV-[a-z0-9-]+$'
+    basis_rules: [RULE-PRODUCT-UNITY-001]
+    fields:
+      enterprise: {type: string, required: true}
+      product_means_checked: {type: string, required: true, note: "почему различие нельзя обеспечить средствами продукта"}
+      variant_owner: {type: string, required: true}
+      justification: {type: string, required: true}
+      return_or_termination_condition: {type: string, required: true}
+    body_sections: [Суть отличия, Проверка средств продукта, Владелец и обоснование, Условие возврата или прекращения, Передать, Основания и пробелы]
+
+  po-decision:
+    role: ROLE-PRODUCT-OWNER
+    path_key: po_decisions
+    id_pattern: '^POD-\d{4}$'
+    fields:
+      decision_kind: {type: string, required: true, enum: [disagreement, common-element-assignment], note: "внутреннее значение плагина, не код Конституции"}
+      rule: {type: string, required: true, enum: [RULE-SCOPE-002, RULE-REQ-002, RULE-FA-CHANGE-001, RULE-SCOPE-003]}
+      parties: {type: list of string, required: true}
+      positions: {type: list, required: true, item: {party: string, position: string, basis: string}}
+      options_consequences: {type: list of string, required: false}
+    body_sections: [Предмет, Позиции, Последствия вариантов, Решение, Передать, Основания и пробелы]
+    validation: [решение фиксируется только через ai_assistance.approval с required_role = ROLE-PRODUCT-OWNER]
+
+  constitution-change-proposal:
+    role: ROLE-PRODUCT-OWNER
+    path_key: constitution_change_proposals
+    id_pattern: '^CCP-\d{4}$'
+    basis_rules: [RULE-PRODUCT-FRAME-002]
+    fields:
+      basis_of_change: {type: string, required: true}
+      affected_provisions: {type: list of string, required: true, min_items: 1}
+      expected_consequences: {type: list of string, required: true}
+      related_documents: {type: list of string, required: true}
+    body_sections: [Основание изменения, Затрагиваемые положения, Ожидаемые последствия, Связанные документы, Порядок рассмотрения, Основания и пробелы]
+    note: "approval.required_role = ROLE-RELEASE-AUTHORITY; организует ROLE-PROCESS-OWNER (разделы 5.3, 5.4)"
+
+  functional-architecture:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: functional_architecture
+    id_pattern: '^FA-M(0[1-9]|1[0-3])$|^FA-[a-z][a-z0-9-]*$'
+    basis_rules: [RULE-SCOPE-001, RULE-DATA-001, RULE-DATA-002, RULE-ARCH-002, TERM-FUNCTIONAL-ARCHITECTURE]
+    fields:
+      module: {type: string, required: true, note: "M01–M13 или функциональная область"}
+      functions: {type: list, required: true, item: {id: string, name: string, primary_module: string, algorithm: string, roles_rights: list, scenarios: {main: string, alternative: list, exceptional: list}}}
+      objects: {type: list, required: true, item: {id: string, name: string, term_ref: string, primary_module: string, data_responsible_module: string, authoritative_state_source: string, attributes: list, validation_rules: list, states: list, transitions: list, retention: string}}
+      interactions: {type: list, required: true, item: {with_module: string, via: '[interface, event, reference]', business_entities: list}}
+      external_exchange: {type: list, required: true, item: {system: string, business_entities: list, events: list, rules: list, degraded_mode: string}}
+      ui: {type: list, required: false, item: {screen: string, purpose: string, roles: list, zones: list, actions: list, wireframe: string}}
+      quality_requirement_refs: {type: list of string, required: false, ref_pattern: '^QR-\d{3,}$'}
+    body_sections: [Функции, Бизнес-объекты и данные, Состояния и переходы, Сценарии, Сроки хранения, Алгоритмы, Роли и права, Интерфейсы, Взаимодействие модулей, Обмен с внешними системами, Работа при недоступности внешних систем, Передать, Основания и пробелы]
+    validation:
+      - у каждого объекта заполнен authoritative_state_source (RULE-DATA-001)
+      - interactions.via только interface, event или reference (RULE-SCOPE-001)
+      - предупреждение при словах из normative-checks.yaml fa_technical_markers вне раздела «Передать»
+
+  practice-review:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: practice_reviews
+    id_pattern: '^PR-\d{4}$'
+    fields:
+      question: {type: string, required: true}
+      candidates: {type: list, required: true, item: {source: string, what_is_borrowed: string, verification: '[проверено по источнику, не проверено]'}}
+    body_sections: [Вопрос, Кандидаты, Вывод для функциональной архитектуры]
+    validation: [в теле есть фраза «Обзор практик нормативным основанием не является»]
+
+  functional-requirement:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: functional_requirements
+    id_pattern: '^FR-M(0[1-9]|1[0-3])-\d{3}$|^FR-[a-z0-9-]+-\d{3}$'
+    basis_rules: [RULE-REQ-001, RULE-REQ-002, TERM-FUNCTIONAL-REQUIREMENT]
+    fields:
+      statement: {type: string, required: true}
+      fa_refs: {type: list of string, required: true, min_items: 1}
+      source: {type: string, required: true}
+      rationale: {type: string, required: true}
+      acceptance_criteria: {type: list of string, required: true, min_items: 1}
+      proposed_by: {type: string, required: true}
+      affected_modules: {type: list of string, required: true}
+    body_sections: [Требование, Ссылки на функциональную архитектуру, Источник и обоснование, Критерии приёмки, Передать, Основания и пробелы]
+    validation: [включение фиксируется через approval с required_role = ROLE-FUNCTIONAL-ARCHITECT]
+
+  technical-constraint:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: technical_constraints
+    id_pattern: '^TC-\d{3,}$'
+    basis_rules: [RULE-REQ-003]
+    fields:
+      statement: {type: string, required: true}
+      external_source_kind: {type: string, required: true, enum_text: ['заказчик', 'ИТ-специалисты заказчика', 'регулятор']}
+      external_source_ref: {type: string, required: true}
+    body_sections: [Ограничение, Внешний источник, Передать, Основания и пробелы]
+    validation: [без external_source_ref артефакт не создаётся]
+
+  quality-requirement:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: quality_requirements
+    id_pattern: '^QR-\d{3,}$'
+    basis_rules: [RULE-QUALITY-001, RULE-QUALITY-002, TERM-QUALITY-REQUIREMENT]
+    fields:
+      category: {type: string, required: true, enum_text: ['производительность', 'отказоустойчивость', 'масштабируемость', 'информационная безопасность', 'автономность работы производственных площадок']}
+      measurable_value: {type: string, required: true}
+      production_need: {type: string, required: true}
+      external_mandatory: {type: object, required: true, fields: {present: boolean, source: string}}
+      weakening: {type: object, required: false, fields: {risk_rationale: string}, note: "только по реплике функционального архитектора"}
+    body_sections: [Требование, Производственная потребность, Внешнее обязательное требование, Ослабление, Передать, Основания и пробелы]
+    validation: [нет раздела о способе обеспечения]
+
+  end-to-end-scenario:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: end_to_end_scenarios
+    id_pattern: '^E2E-\d{3,}$'
+    basis_rules: [RULE-SCENARIO-001, TERM-END-TO-END-SCENARIO]
+    fields:
+      initial_data: {type: list of string, required: true}
+      steps: {type: list, required: true, min_items: 2, item: {actor: '[система, пользователь с ролью]', action: string}}
+      expected_production_result: {type: string, required: true}
+      functions_used: {type: list of string, required: true}
+      reverification_needed: {type: boolean, required: true}
+    body_sections: [Исходные данные, Последовательность, Ожидаемый результат, Используемые функции, Основания и пробелы]
+
+  test-design:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: test_design
+    id_pattern: '^TD-\d{3,}$'
+    basis_rules: [RULE-ACCEPTANCE-005]
+    fields:
+      covers: {type: list of string, required: true, min_items: 1, note: "FR-…, E2E-…"}
+      test_cases: {type: list, required: true, item: {id: string, preconditions: string, steps: list, expected: string, result: '[PASS, FAIL, пусто]', result_recorded_by: string}}
+    body_sections: [Покрытие, Тестовые сценарии, Основания и пробелы]
+    validation: [result заполняется только со слов исполнителя проверки]
+
+  acceptance-record:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: functional_acceptance
+    id_pattern: '^ACC-\d{4}$'
+    basis_rules: [RULE-ACCEPTANCE-001, RULE-ACCEPTANCE-002, RULE-ACCEPTANCE-003, RULE-ACCEPTANCE-004, RULE-ACCEPTANCE-006]
+    fields:
+      functionality: {type: string, required: true}
+      acceptance_scope: {type: string, required: true, enum_text: ['локальная', 'сквозная'], note: "TERM-FUNCTIONAL-ACCEPTANCE"}
+      fr_refs: {type: list of string, required: true, min_items: 1}
+      fa_revision: {type: string, required: true}
+      prerequisites: {type: object, required: true, fields: {tests_pass_ref: string, developer_description_ref: string, differences_from_fa: list}}
+      step_results: {type: list, required: true, item: {step: 'ACC-STEP-01…ACC-STEP-09', checked: string, findings: string, refs: list}}
+      outcome: {type: string, required: false, enum: [ACCEPTED, ACCEPTED_WITH_REMARKS, RETURNED, REJECTED_ARCHITECTURALLY], note: "заполняется только при approval.recorded = true"}
+      remarks_as_work_items: {type: list of string, required: false}
+      after_rejection_decision: {type: string, required: false, enum_text: ['переделать реализацию', 'изменить функциональную архитектуру']}
+    body_sections: [Функциональность, Предпосылки передачи, Результаты по шагам, Полнота, Исход, Замечания, Передать, Основания и пробелы]
+    validation:
+      - при отсутствии tests_pass_ref или developer_description_ref артефакт не создаётся (RULE-ACCEPTANCE-004)
+      - outcome = ACCEPTED_WITH_REMARKS требует remarks_as_work_items
+      - outcome = REJECTED_ARCHITECTURALLY требует after_rejection_decision (RULE-FA-CHANGE-002)
+
+  fa-change:
+    role: ROLE-FUNCTIONAL-ARCHITECT
+    path_key: fa_changes
+    id_pattern: '^FAC-\d{4}$'
+    basis_rules: [RULE-FA-CHANGE-001]
+    fields:
+      changed_elements: {type: list of string, required: true, min_items: 1}
+      reason: {type: string, required: true}
+      affected_modules: {type: list of string, required: true}
+      other_architects_agreement: {type: list, required: false, item: {module: string, statement: string, date: string}}
+      before_acceptance: {type: boolean, required: true, const: true}
+    body_sections: [Изменяемые элементы, Причина, Затронутые модули, Согласование, Передать, Основания и пробелы]
+
+  adr:
+    role: ROLE-TECHNICAL-ARCHITECT
+    path_key: adr
+    id_pattern: '^ADR-\d{4}$'
+    basis_rules: [RULE-ARCH-001, RULE-ARCH-002, TERM-TECHNICAL-ARCHITECTURE-DECISION]
+    fields:
+      context: {type: string, required: true}
+      answers_to: {type: list of string, required: true, min_items: 1, note: "FR-…, QR-…, FA-…, TC-…"}
+      value: {type: string, required: true}
+      alternatives: {type: list, required: true, min_items: 1, item: {option: string, pros: list, cons: list}}
+      decision: {type: string, required: true}
+      evidence: {type: list, required: true, item: {kind: '[расчёт, проверка прототипа, испытание, иные проверяемые данные]', ref: string}}
+      significance: {type: string, required: true, enum_text: ['высокая', 'средняя', 'низкая']}
+      unproven: {type: boolean, required: true, note: "true, если evidence пуст"}
+      consequences: {type: list of string, required: true}
+    body_sections: [Контекст, На что отвечает, Ценность, Альтернативы, Решение, Доказательства, Последствия и риски, Передать, Основания и пробелы]
+    validation: [significance = высокая требует не меньше двух alternatives]
+
+  c4-model:
+    role: ROLE-TECHNICAL-ARCHITECT
+    path_key: c4
+    id_pattern: '^C4-[a-z0-9-]+$'
+    fields:
+      dsl_file: {type: string, required: true, note: "путь к workspace.dsl"}
+      views: {type: list of string, required: true, note: "SystemContext, Container, Component, Deployment"}
+      elements_without_adr: {type: list of string, required: true}
+      quality_coverage: {type: list, required: false, item: {qr: string, adr: list, verification: string}}
+    body_sections: [Состав модели, Представления, Элементы без ADR, Обеспечение требований к качеству, Основания и пробелы]
+    validation: [у каждого элемента workspace.dsl есть свойство adr]
+
+  deployment-architecture:
+    role: ROLE-TECHNICAL-ARCHITECT
+    path_key: deployment_architecture
+    id_pattern: '^DEP-[a-z0-9-]+$'
+    basis_rules: [TERM-TECHNICAL-ARCHITECTURE]
+    fields:
+      placement: {type: list, required: true}
+      change_kinds: {type: list, required: true, min_items: 1, item: {kind: string, update: string, data_migration: string, rollback: {type: string, required: true, min_length: 1}}}
+      backup_restore: {type: string, required: true}
+      monitoring_logging: {type: string, required: true}
+    body_sections: [Размещение, Виды изменений, Откат, Резервное копирование и восстановление, Мониторинг и журналирование, Передать, Основания и пробелы]
+    validation: [пустой rollback у любого вида изменения — ошибка]
+
+  scope-return:
+    role: ROLE-TECHNICAL-ARCHITECT
+    path_key: scope_returns
+    id_pattern: '^SR-\d{4}$'
+    basis_rules: [RULE-SCOPE-002]
+    fields:
+      allocation_ref: {type: string, required: true}
+      contradicted_provision: {type: string, required: true, note: "идентификатор элемента функциональной архитектуры или QR-…"}
+      reason: {type: string, required: true}
+    body_sections: [Отнесение, Противоречащее положение, Причина, Основания и пробелы]
+
+  term-proposal:
+    role: [ROLE-FUNCTIONAL-ARCHITECT, ROLE-TECHNICAL-ARCHITECT, ROLE-PRODUCT-OWNER]
+    path_key: term_proposals
+    id_pattern: '^TP-\d{4}$'
+    basis_rules: [RULE-TERM-001, RULE-TERM-002, RULE-TERM-003]
+    fields:
+      preferred_name_ru: {type: string, required: true}
+      stable_id_en: {type: string, required: true}
+      definition_ru: {type: string, required: true}
+      scope: {type: string, required: true}
+      owner_role: {type: string, required: true, enum: [ROLE-FUNCTIONAL-ARCHITECT, ROLE-TECHNICAL-ARCHITECT, ROLE-PROCESS-OWNER], note: "по разделу 5.2"}
+      source: {type: string, required: true}
+      synonyms: {type: list of string, required: false}
+      registry_check: {type: string, required: true, enum: [TERM_PASS, TERM_ALIAS, TERM_NOT_DEFINED, TERM_AMBIGUOUS, TERM_SCOPE_MISMATCH, TERM_DEPRECATED, TERM_CANDIDATE]}
+      cross_module_architects: {type: list of string, required: false}
+    body_sections: [Термин, Определение, Область и владелец, Результат проверки реестра, Порядок утверждения, Основания и пробелы]
+    validation: [в шапке нет поля статуса термина; статус присваивает ROLE-DOCUMENTATION-OWNER по решению роли (раздел 5.2)]
+
+  gate-package:
+    role: любая роль
+    path_key: gates
+    id_pattern: '^GP-GATE-0[1-6]-[a-z0-9-]+$'
+    basis_rules: []
+    fields:
+      gate: {type: string, required: true, enum: [GATE-01, GATE-02, GATE-03, GATE-04, GATE-05, GATE-06]}
+      evaluated_result: {type: string, required: true}
+      responsible_role: {type: string, required: true, note: "из stages_gates"}
+      required_conclusions: {type: list, required: true, item: {role: string, present: boolean, ref: string}}
+      evidence: {type: list, required: true, item: {what: string, ref: string}}
+      traceability_breaks: {type: list, required: true}
+      status_discrepancies: {type: list, required: true}
+      acceptance_outcomes: {type: list, required: false, note: "для GATE-03 и GATE-04"}
+      blocking_items: {type: list, required: true}
+      go_excluded: {type: boolean, required: true}
+    body_sections: [Гейт и результат, Обязательные заключения, Доказательства, Прослеживаемость, Расхождения статусов, Исходы функциональной приёмки, Блокирующие пункты, Напоминание раздела 3.1, Основания и пробелы]
+    validation: [go_excluded = true тогда и только тогда, когда blocking_items не пуст; approval.required_role = responsible_role, recorded = false всегда]
+
+  role-conclusion:
+    role: любая роль
+    path_key: gates
+    id_pattern: '^RC-GATE-0[1-6]-ROLE-[A-Z-]+-[a-z0-9-]+$'
+    fields:
+      gate: {type: string, required: true}
+      role: {type: string, required: true}
+      questions_to_consider: {type: list of string, required: true}
+      findings: {type: list, required: false, item: {provision: string, text: string}}
+      reviewer_result: {type: string, required: false, enum: [PASS, REWORK, STOP-RECOMMENDED], note: "только для ROLE-INDEPENDENT-REVIEWER"}
+      conclusion_text: {type: string, required: false, note: "для остальных ролей — текстом, без кода"}
+    body_sections: [Гейт и роль, Что рассмотреть, Замечания, Итог, Основания и пробелы]
+    validation: [reviewer_result допустим только при role = ROLE-INDEPENDENT-REVIEWER]
+
+  gate-decision:
+    role: ответственная роль гейта по разделу 3.2
+    path_key: gates
+    id_pattern: '^GD-GATE-0[1-6]-[a-z0-9-]+$'
+    fields:
+      gate: {type: string, required: true}
+      package_ref: {type: string, required: true}
+      decision: {type: string, required: true, enum: [GO, REWORK, STOP, RETIRE]}
+      decided_by_role: {type: string, required: true}
+    body_sections: [Решение, Реплика, Пакет, Основания и пробелы]
+    validation:
+      - RETIRE допустим только для GATE-05
+      - decided_by_role равна ответственной роли гейта из stages_gates
+      - approval.recorded = true, statement и date заполнены
+      - decision = GO недопустим, если в пакете go_excluded = true

@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "term-proposal.schema.json",
+  "title": "Шапка артефакта term-proposal",
+  "description": "Шапка артефакта «term-proposal». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml; в шапке нет поля статуса термина; статус присваивает ROLE-DOCUMENTATION-OWNER по решению роли (раздел 5.2).",
+  "type": "object",
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "description": "имя типа из этого файла",
+      "const": "term-proposal"
+    },
+    "artifact_id": {
+      "type": "string",
+      "description": "по id_pattern типа",
+      "pattern": "^TP-\\d{4}$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string",
+      "description": "номер редакции проекта материала, например 0.1"
+    },
+    "ai_assistance": {
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "type": "string",
+          "const": "sigma-mes-skills"
+        },
+        "plugin_version": {
+          "type": "string",
+          "const": "0.11.0"
+        },
+        "constitution_version": {
+          "type": "string",
+          "description": "из шага S4"
+        },
+        "active_role": {
+          "type": "string",
+          "pattern": "^ROLE-[A-Z-]+$"
+        },
+        "prepared_by_ai": {
+          "type": "boolean",
+          "const": true
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "description": "путь@редакция или коммит"
+              },
+              "element": {
+                "type": "string",
+                "description": "RULE-…, TERM-…, раздел, идентификатор артефакта"
+              }
+            },
+            "required": [
+              "ref",
+              "element"
+            ]
+          },
+          "minItems": 1
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "пустой список допустим; фраза «Основания в действующих материалах нет: …»"
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "required_role": {
+              "type": "string",
+              "pattern": "^ROLE-[A-Z-]+$"
+            },
+            "recorded": {
+              "type": "boolean"
+            },
+            "statement": {
+              "type": "string",
+              "description": "дословная цитата реплики; обязательна, если recorded = true"
+            },
+            "date": {
+              "type": "string",
+              "description": "ГГГГ-ММ-ДД; обязательна, если recorded = true"
+            }
+          },
+          "required": [
+            "required_role",
+            "recorded"
+          ],
+          "if": {
+            "properties": {
+              "recorded": {
+                "const": true
+              }
+            },
+            "required": [
+              "recorded"
+            ]
+          },
+          "then": {
+            "required": [
+              "statement",
+              "date"
+            ]
+          }
+        }
+      },
+      "required": [
+        "plugin",
+        "plugin_version",
+        "constitution_version",
+        "active_role",
+        "prepared_by_ai",
+        "basis",
+        "gaps",
+        "approval"
+      ]
+    },
+    "preferred_name_ru": {
+      "type": "string"
+    },
+    "stable_id_en": {
+      "type": "string"
+    },
+    "definition_ru": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": [
+        "ROLE-FUNCTIONAL-ARCHITECT",
+        "ROLE-TECHNICAL-ARCHITECT",
+        "ROLE-PROCESS-OWNER"
+      ],
+      "description": "по разделу 5.2"
+    },
+    "source": {
+      "type": "string"
+    },
+    "synonyms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "registry_check": {
+      "type": "string",
+      "enum": [
+        "TERM_PASS",
+        "TERM_ALIAS",
+        "TERM_NOT_DEFINED",
+        "TERM_AMBIGUOUS",
+        "TERM_SCOPE_MISMATCH",
+        "TERM_DEPRECATED",
+        "TERM_CANDIDATE"
+      ]
+    },
+    "cross_module_architects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "artifact_type",
+    "artifact_id",
+    "title",
+    "product_id",
+    "revision",
+    "ai_assistance",
+    "preferred_name_ru",
+    "stable_id_en",
+    "definition_ru",
+    "scope",
+    "owner_role",
+    "source",
+    "registry_check"
+  ],
+  "additionalProperties": true
+}
