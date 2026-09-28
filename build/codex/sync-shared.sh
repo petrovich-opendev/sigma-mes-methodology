@@ -10,7 +10,7 @@ set -e
 
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 SRC="$ROOT/plugin-src/shared"
-PLUGIN="$ROOT/plugins/sigma-mes-codex"
+PLUGIN="$ROOT/plugins/sigma-mes-skills"
 
 if [ ! -d "$SRC" ]; then
   echo "FAIL: нет каталога $SRC"

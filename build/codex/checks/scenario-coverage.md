@@ -20,25 +20,25 @@
 
 ## T-03. «Утверди термин»
 
-- `plugins/sigma-mes-codex/skills/sigma-functional-architect/SKILL.md` → «FA-6. Предметные
+- `plugins/sigma-mes-skills/skills/sigma-functional-architect/SKILL.md` → «FA-6. Предметные
   термины» (проект `term-proposal`; статус присваивают люди по разделу 5.2; запрет записи в
   реестр через MCP).
 - `plugin-src/shared/session-protocol.md` → «R4. Ты не принимаешь решений», «R8. Термины».
 
 ## T-04. GO без заключения
 
-- `plugins/sigma-mes-codex/skills/sigma-gates/SKILL.md` → «G-3. Запись решения по гейту»,
+- `plugins/sigma-mes-skills/skills/sigma-gates/SKILL.md` → «G-3. Запись решения по гейту»,
   шаг 3 (решение не записывается, перечисляются блокирующие пункты, цитируется раздел 3.1).
 - Там же → «Общее правило гейта» (отсутствие обязательного заключения исключает GO).
 
 ## T-05. GO на GATE-03 при исходе RETURNED
 
-- `plugins/sigma-mes-codex/skills/sigma-gates/SKILL.md` → «G-1. Пакет гейта», шаг 6
+- `plugins/sigma-mes-skills/skills/sigma-gates/SKILL.md` → «G-1. Пакет гейта», шаг 6
   (исход RETURNED — блокирующий пункт) и шаг 7 (`go_excluded` = true).
 
 ## T-06. Технические подробности в функциональной архитектуре
 
-- `plugins/sigma-mes-codex/skills/sigma-functional-architect/SKILL.md` → «FA-1.
+- `plugins/sigma-mes-skills/skills/sigma-functional-architect/SKILL.md` → «FA-1.
   Функциональная архитектура модуля», блок «Запрещено» (протоколы, форматы, расписание — в
   «Передать техническому архитектору», RULE-DATA-002).
 - Там же → «Передача другим ролям».
@@ -56,26 +56,26 @@
 
 ## T-09. Техническое ограничение от владельца продукта
 
-- `plugins/sigma-mes-codex/skills/sigma-product-owner/SKILL.md` → «PO-1. Описание продукта»,
+- `plugins/sigma-mes-skills/skills/sigma-product-owner/SKILL.md` → «PO-1. Описание продукта»,
   блок «Запрещено» (технические ограничения от себя не записываются, RULE-REQ-003; услышанное
   идёт в «Передать»).
-- `plugins/sigma-mes-codex/skills/sigma-functional-architect/SKILL.md` → «FA-4.
+- `plugins/sigma-mes-skills/skills/sigma-functional-architect/SKILL.md` → «FA-4.
   Функциональные требования», шаг 3 (техническое ограничение — только с внешним источником).
 
 ## T-10. Вариант для предприятия без условия возврата
 
-- `plugins/sigma-mes-codex/skills/sigma-product-owner/SKILL.md` → «PO-4. Вариант для
+- `plugins/sigma-mes-skills/skills/sigma-product-owner/SKILL.md` → «PO-4. Вариант для
   предприятия», шаг 3 и блок «Запрещено» (без владельца, обоснования и условия возврата
   артефакт не выдаётся).
 
 ## T-11. Приёмка без PASS
 
-- `plugins/sigma-mes-codex/skills/sigma-functional-architect/SKILL.md` → «FA-9.
+- `plugins/sigma-mes-skills/skills/sigma-functional-architect/SKILL.md` → «FA-9.
   Функциональная приёмка», шаг 1 (передача на приёмку не выполнена, RULE-ACCEPTANCE-004).
 
 ## T-12. Развёртывание без отката
 
-- `plugins/sigma-mes-codex/skills/sigma-technical-architect/SKILL.md` → «TA-3. Архитектура
+- `plugins/sigma-mes-skills/skills/sigma-technical-architect/SKILL.md` → «TA-3. Архитектура
   развёртывания» (откат обязателен для каждого вида изменения; пустое поле — артефакт не
   выдаётся) и «Перед выдачей», пункт 4.
 

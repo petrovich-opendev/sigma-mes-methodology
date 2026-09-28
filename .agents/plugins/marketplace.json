@@ -4,7 +4,7 @@
   "plugins": [
     {
       "name": "sigma-mes-skills",
-      "source": { "source": "local", "path": "./plugins/sigma-mes-codex" },
+      "source": { "source": "local", "path": "./plugins/sigma-mes-skills" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
       "category": "Productivity"
     }

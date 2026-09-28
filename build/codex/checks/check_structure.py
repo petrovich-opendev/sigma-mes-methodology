@@ -4,7 +4,7 @@
 Каждая проверка печатает OK или FAIL с указанием, что именно не так. Код возврата 1,
 если есть хотя бы один FAIL. Ослаблять проверки ради прохождения запрещено.
 
-Каталог плагина — plugins/sigma-mes-codex/ (отступление от D-02, см. Q-101 в
+Каталог плагина — plugins/sigma-mes-skills/ (отступление от D-02, см. Q-101 в
 OPEN-QUESTIONS.md плагина: по пути из D-02 уже находится плагин 0.10.1 для Claude Code).
 """
 import hashlib
@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-PLUGIN = os.path.join(ROOT, "plugins/sigma-mes-codex")
+PLUGIN = os.path.join(ROOT, "plugins/sigma-mes-skills")
 SHARED = os.path.join(ROOT, "plugin-src/shared")
 PROMPT = os.path.join(ROOT, "prompt/0.11.0")
 SKILLS = ["sigma-product-owner", "sigma-functional-architect",
@@ -262,35 +262,38 @@ if leak:
     problems.append("строка, похожая на токен: %s" % leak.group(1)[:12])
 check("S-11", not problems, "; ".join(problems))
 
-# S-12. Версия 0.10.x не тронута
+# S-12. Размещение файлов
 #
-# В пакете проверка сравнивала с HEAD, потому что коммит не делался. После решения владельца
-# процесса перевести main на 0.11.0 коммит делается, и сравнение с HEAD стало бы вакуумным:
-# оно всегда пусто. База сравнения — тег предыдущего выпуска v0.10.1, а при его отсутствии
-# сохраняется прежнее поведение.
-OLD_PATHS = ["plugins/sigma-mes-skills", ".claude-plugin", "build/product-vision-interview",
-             "build/domain-model-interview", "build/check.sh", "build/build.sh",
-             "build/sync-shared.sh", "build/checks", "tests", "docs",
-             "README.md", "INSTALL.md", "OPEN-QUESTIONS.md", "LICENSE"]
+# В пакете S-12 состояла из двух половин: «версия 0.10.0 не тронута» (сравнение с HEAD) и
+# «новые файлы допустимы только в каталогах из spec/plugin-layout.md и в prompt/».
+#
+# Первая половина предмет потеряла: по решению владельца процесса от 2026-09-28 поколение
+# 0.10.x удалено из репозитория как противоречащее Конституции 0.9. Прежнее содержимое
+# доступно в теге v0.10.1 и в истории git.
+#
+# Вторая половина не была реализована вовсе: сравнение шло по списку путей прежней версии,
+# поэтому файл в любом непредусмотренном месте был для проверки невидим. Теперь проверяется
+# именно она, и для всех файлов — отслеживаемых и новых.
+ALLOWED_ROOTS = [".agents/plugins/", "plugin-src/shared/", "plugins/sigma-mes-skills/",
+                 "build/codex/", "prompt/"]
+ALLOWED_FILES = {"README.md", "INSTALL.md", "LICENSE", ".gitignore"}
 try:
-    base = subprocess.run(
-        ["git", "-C", ROOT, "rev-parse", "--verify", "--quiet", "v0.10.1^{commit}"],
-        capture_output=True, text=True).stdout.strip()
-    if not base:
-        # Молчаливого отката на HEAD здесь быть не должно: в поверхностном клоне
-        # (git clone --depth 1) тега нет, сравнение с HEAD всегда пусто, и проверка
-        # отрапортовала бы OK, не проверив ничего.
-        check("S-12", False,
-              "нет тега v0.10.1 — базы сравнения. Проверка неприменима в поверхностном "
-              "клоне: выполните git fetch --tags --unshallow")
-    else:
-        diff = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", base, "--"] + OLD_PATHS,
-                              capture_output=True, text=True, check=True).stdout.split()
-        check("S-12", not diff,
-              "относительно v0.10.1 (%s) изменены файлы прежней версии: %s"
-              % (base[:8], ", ".join(diff)))
+    tracked = subprocess.run(["git", "-C", ROOT, "ls-files"],
+                             capture_output=True, text=True, check=True).stdout.split()
+    porcelain = subprocess.run(["git", "-C", ROOT, "status", "--porcelain"],
+                               capture_output=True, text=True, check=True).stdout.splitlines()
+    untracked = [ln[3:].strip().strip('"') for ln in porcelain if ln.startswith("??")]
+    stray = []
+    for rel in sorted(set(tracked) | set(untracked)):
+        if rel in ALLOWED_FILES:
+            continue
+        if any(rel.startswith(root) for root in ALLOWED_ROOTS):
+            continue
+        stray.append(rel)
+    check("S-12", not stray,
+          "файлы вне дерева spec/plugin-layout.md и prompt/: " + ", ".join(stray[:8]))
 except Exception as exc:  # noqa: BLE001
-    check("S-12", False, "git diff не выполнен: %s" % exc)
+    check("S-12", False, "перечень файлов не получен: %s" % exc)
 
 print()
 if fails:

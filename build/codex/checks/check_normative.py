@@ -5,7 +5,7 @@
 decision_integrity (на примерах из fixtures/), fa_technical_markers (предупреждение).
 
 Каждая проверка печатает OK, FAIL или WARN. Код возврата 1, если есть хотя бы один FAIL.
-Каталог плагина — plugins/sigma-mes-codex/ (см. Q-101 в OPEN-QUESTIONS.md плагина).
+Каталог плагина — plugins/sigma-mes-skills/ (см. Q-101 в OPEN-QUESTIONS.md плагина).
 """
 import fnmatch
 import glob
@@ -17,7 +17,7 @@ import sys
 import yaml
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-PLUGIN_REL = "plugins/sigma-mes-codex"
+PLUGIN_REL = "plugins/sigma-mes-skills"
 PLUGIN = os.path.join(ROOT, PLUGIN_REL)
 SHARED = os.path.join(ROOT, "plugin-src/shared")
 FIXTURES = os.path.join(ROOT, "build/codex/checks/fixtures")
