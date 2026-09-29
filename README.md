@@ -24,7 +24,7 @@
 
 ## Среда исполнения
 
-Плагин работает в ChatGPT и Codex:
+Плагин работает в ChatGPT и Codex, включая обычный режим чата и проект в чате:
 
 - ChatGPT для десктопа, режимы Codex и Work;
 - Codex CLI;
@@ -59,7 +59,7 @@
 ```
 .agents/plugins/marketplace.json          — маркетплейс репозитория
 plugin-src/shared/                        — единый источник общих справочников
-  session-protocol.md                     — протокол сеанса: шаги S1–S6, правила R1–R10
+  session-protocol.md                     — протокол сеанса: шаги S1–S6, правила R1–R12
   constitution.extract.yaml               — дословное извлечение Конституции 0.9
   acceptance-regulation.extract.yaml      — дословное извлечение Регламента приёмки 0.1
   codes.yaml                              — разрешённые коды и версии, для которых собран плагин

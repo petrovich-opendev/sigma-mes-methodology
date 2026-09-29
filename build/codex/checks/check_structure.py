@@ -204,6 +204,19 @@ for needle in ("## Главное: плагин самодостаточен", "
                "### R12. Новые модули и гипотезы"):
     if needle not in protocol:
         problems.append("нет раздела: %s" % needle)
+# Шаги протокола — не единственный носитель правила. Первая проверка v0.11.1 нашла
+# блокирующую строку в шаблоне конфигурации, который протокол разрешает показать
+# пользователю, — S-07 его не читала. Теперь охвачены и шаблон, и раздел «Протокол
+# сеанса» каждого навыка.
+extra_carriers = [("config-template.yaml", read(os.path.join(SHARED, "config-template.yaml")))]
+for skill in SKILLS:
+    text = read(os.path.join(PLUGIN, "skills", skill, "SKILL.md"))
+    m = re.search(r"^## Протокол сеанса\n(.*?)(?=^## )", text, re.S | re.M)
+    extra_carriers.append(("%s/SKILL.md «Протокол сеанса»" % skill, m.group(1) if m else ""))
+for name, text in extra_carriers:
+    for phrase in STOP_PHRASES + ["не создают нормативных материалов"]:
+        if phrase in text:
+            problems.append("%s содержит блокирующую формулировку «%s»" % (name, phrase))
 check("S-07", not problems, "; ".join(problems))
 
 # S-08. Извлечения побайтно равны пакету; built_for в codes.yaml

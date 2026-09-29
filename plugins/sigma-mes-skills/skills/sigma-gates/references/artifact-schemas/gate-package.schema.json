@@ -161,7 +161,31 @@
             "type": "string"
           }
         },
-        "required": []
+        "required": [],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "present": {
+                  "const": true
+                }
+              },
+              "required": [
+                "present"
+              ]
+            },
+            "then": {
+              "required": [
+                "ref"
+              ],
+              "properties": {
+                "ref": {
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "evidence": {
