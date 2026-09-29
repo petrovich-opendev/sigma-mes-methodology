@@ -1,6 +1,6 @@
 # Установка и работа
 
-Плагин один: `sigma-mes-skills` версии 0.11.2 для ChatGPT для десктопа (установка в режимах
+Плагин один: `sigma-mes-skills` версии 0.11.3 для ChatGPT для десктопа (установка в режимах
 Codex или Work; навыки работают и в обычном режиме чата, и в проекте чата) и Codex CLI.
 Расширение Codex для IDE плагины не поддерживает. Подробная установка — в
 `plugins/sigma-mes-skills/INSTALL.md`; здесь общий порядок и то, что относится к самому
@@ -84,9 +84,13 @@ python3 -m pip install --user PyYAML jsonschema
 1. Новый пакет кладётся в `prompt/<версия>/`; каталог `prompt/0.11.0/` не правится.
 2. Документ .docx переводится в Markdown (например, `pandoc -t gfm`), извлечения снимаются
    `build/codex/extract_constitution.py` в `plugin-src/shared/` и сверяются с пакетом.
-3. Правится `built_for` в `plugin-src/shared/codes.yaml`; версия плагина поднимается
-   одинаково в `plugins/sigma-mes-skills/plugin.json`, `built_for.plugin_version` и схемах
-   артефактов (проверка S-01); правятся тексты, где редакции названы явно: протокол сеанса,
-   SKILL.md, README, INSTALL.
-4. Проверки S-08 и S-09 переводятся на новый пакет (сейчас они читают `prompt/0.11.0/`),
-   прогоняется приёмка.
+3. Правится `built_for` в `plugin-src/shared/codes.yaml`. Версия плагина поднимается
+   одинаково в `plugins/sigma-mes-skills/plugin.json`, `built_for.plugin_version`, схемах
+   (`plugin-src/shared/artifact-schemas/`, проверка S-01), шаблонах
+   (`plugin-src/shared/templates/`) и примерах (`build/codex/checks/fixtures/`, проверка S-09).
+   Правятся тексты, где редакции названы явно: протокол сеанса, SKILL.md, `plugin.json`
+   (`longDescription`), README, INSTALL. Затем `sh build/codex/sync-shared.sh`.
+4. На новый пакет переводятся константа `PROMPT` в `build/codex/checks/check_structure.py`
+   (её читают S-03, S-08, S-09) и `SPEC` в `build/codex/checks/check_normative.py`; в S-08
+   правятся имена файлов извлечений и ожидаемые версии, а если версия плагина уходит с
+   линии 0.11.x — и регулярное выражение в S-01. Прогоняется приёмка.

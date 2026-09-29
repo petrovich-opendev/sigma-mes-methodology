@@ -1,4 +1,4 @@
-# sigma-mes-skills 0.11.2
+# sigma-mes-skills 0.11.3
 
 ## Назначение
 

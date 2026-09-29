@@ -1,6 +1,6 @@
 built_for:
   plugin: sigma-mes-skills
-  plugin_version: 0.11.2
+  plugin_version: 0.11.3
   constitution: "0.9"
   acceptance_regulation: "0.1"
 allowed_codes:
