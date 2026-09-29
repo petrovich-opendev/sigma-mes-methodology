@@ -55,8 +55,23 @@ try:
         problems.append("$schema")
     if man.get("name") != "sigma-mes-skills":
         problems.append("name")
-    if man.get("version") != "0.11.0":
-        problems.append("version")
+    # Версия: пакет требовал ровно 0.11.0; после решения владельца процесса от 2026-09-29
+    # (Q-103) она поднята. Проверяется согласованность в трёх местах, чтобы номер не
+    # разошёлся: манифест, built_for.plugin_version в codes.yaml и const в схемах артефактов.
+    import yaml as _yaml
+    ver = man.get("version")
+    codes_ver = str(_yaml.safe_load(read(os.path.join(SHARED, "codes.yaml")))
+                    ["built_for"]["plugin_version"])
+    if not re.match(r"^0\.11\.\d+$", str(ver or "")):
+        problems.append("version не из линии 0.11.x: %s" % ver)
+    if codes_ver != ver:
+        problems.append("version %s не равна built_for.plugin_version %s" % (ver, codes_ver))
+    for sch in os.listdir(os.path.join(SHARED, "artifact-schemas")):
+        c = json.loads(read(os.path.join(SHARED, "artifact-schemas", sch)))
+        const = c["properties"]["ai_assistance"]["properties"]["plugin_version"].get("const")
+        if const != ver:
+            problems.append("%s: plugin_version %s" % (sch, const))
+            break
     iface = man.get("extensions", {}).get("com.openai", {}).get("interface", {})
     for field in ("displayName", "shortDescription", "longDescription", "developerName",
                   "capabilities", "defaultPrompt"):
@@ -166,11 +181,30 @@ for skill in SKILLS:
             problems.append("%s: %s отличается от источника" % (skill, rel))
 check("S-06", not problems, "; ".join(problems[:6]))
 
-# S-07. Протокол сеанса побайтно равен пакету
-check("S-07",
-      sha(os.path.join(SHARED, "session-protocol.md")) ==
-      sha(os.path.join(PROMPT, "spec/session-protocol.md")),
-      "session-protocol.md отличается от spec/session-protocol.md пакета")
+# S-07. Протокол сеанса: плагин самодостаточен
+#
+# В пакете S-07 требовала побайтного совпадения протокола с spec/session-protocol.md. По
+# решению владельца процесса от 2026-09-29 (Q-103) протокол переписан: плагин полностью
+# самодостаточен и ни один шаг начала сеанса не останавливает работу. Проверка теперь
+# охраняет именно это требование — без неё блокирующая формулировка вернулась бы незаметно.
+protocol = read(os.path.join(SHARED, "session-protocol.md"))
+problems = []
+STOP_PHRASES = ["не создавай", "не создаются", "работу не выполняй", "Работу не выполняй",
+                "не разрешена", "остановись", "заблокирован", "назови недостающие поля",
+                "предложи заполнить шаблон"]
+steps = re.split(r"\n### ", protocol)
+for step in steps:
+    head = step.split("\n", 1)[0]
+    if not re.match(r"S[1-6]\.", head):
+        continue
+    for phrase in STOP_PHRASES:
+        if phrase in step:
+            problems.append("%s содержит блокирующую формулировку «%s»" % (head, phrase))
+for needle in ("## Главное: плагин самодостаточен", "### R11. Материалы пользователя",
+               "### R12. Новые модули и гипотезы"):
+    if needle not in protocol:
+        problems.append("нет раздела: %s" % needle)
+check("S-07", not problems, "; ".join(problems))
 
 # S-08. Извлечения побайтно равны пакету; built_for в codes.yaml
 problems = []

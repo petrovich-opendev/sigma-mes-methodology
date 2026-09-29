@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "acceptance-record.schema.json",
   "title": "Шапка артефакта acceptance-record",
-  "description": "Шапка артефакта «acceptance-record». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml; при отсутствии tests_pass_ref или developer_description_ref артефакт не создаётся (RULE-ACCEPTANCE-004); outcome = ACCEPTED_WITH_REMARKS требует remarks_as_work_items; outcome = REJECTED_ARCHITECTURALLY требует after_rejection_decision (RULE-FA-CHANGE-002).",
+  "description": "Шапка артефакта «acceptance-record». Правила, проверяемые check_normative.py: если approval.recorded = true, то statement и date обязательны; в тексте нет кодов из deprecated.yaml; исход приёмки недопустим при отсутствии tests_pass_ref или developer_description_ref (RULE-ACCEPTANCE-004); без них запись готовится как проект; outcome = ACCEPTED_WITH_REMARKS требует remarks_as_work_items; outcome = REJECTED_ARCHITECTURALLY требует after_rejection_decision (RULE-FA-CHANGE-002).",
   "type": "object",
   "properties": {
     "artifact_type": {
@@ -34,7 +34,7 @@
         },
         "plugin_version": {
           "type": "string",
-          "const": "0.11.0"
+          "const": "0.11.1"
         },
         "constitution_version": {
           "type": "string",

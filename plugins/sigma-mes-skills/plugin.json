@@ -1,11 +1,18 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "sigma-mes-skills",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Навыки ролей Конституции разработки СИГМА.MES+: владелец продукта, функциональный архитектор, технический архитектор, гейты.",
-  "author": { "name": "СИГМА.MES+: владелец Конституции и процесса" },
+  "author": {
+    "name": "СИГМА.MES+: владелец Конституции и процесса"
+  },
   "license": "Proprietary",
-  "keywords": ["sigma-mes", "openup", "constitution", "gates"],
+  "keywords": [
+    "sigma-mes",
+    "openup",
+    "constitution",
+    "gates"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
@@ -14,7 +21,10 @@
         "longDescription": "Готовит материалы владельца продукта, функционального и технического архитектора и пакеты гейтов строго по действующей Конституции разработки СИГМА.MES+. Не принимает решений: утверждают профильные роли.",
         "developerName": "СИГМА.MES+",
         "category": "Productivity",
-        "capabilities": ["Read", "Write"],
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
         "defaultPrompt": [
           "Начать работу в роли владельца продукта",
           "Начать работу в роли функционального архитектора",

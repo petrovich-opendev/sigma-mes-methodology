@@ -6,7 +6,7 @@ product_id: sigma-mes
 revision: '0.1'
 ai_assistance:
   plugin: sigma-mes-skills
-  plugin_version: 0.11.0
+  plugin_version: 0.11.1
   constitution_version: '0.9'
   active_role: ROLE-TECHNICAL-ARCHITECT
   prepared_by_ai: true

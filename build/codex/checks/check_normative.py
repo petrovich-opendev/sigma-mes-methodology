@@ -246,10 +246,15 @@ def validate_artifact(name, fm, path):
 
     if t == "acceptance-record":
         pre = fm.get("prerequisites") or {}
-        for field in ("tests_pass_ref", "developer_description_ref"):
-            if not str(pre.get(field) or "").strip():
-                out.append("нет %s: передача на приёмку не выполнена (RULE-ACCEPTANCE-004)" % field)
         outcome = fm.get("outcome")
+        # Решение владельца процесса от 2026-09-29 (Q-103): без PASS и описания разработчика
+        # запись приёмки готовится как проект, работа не останавливается. Существо
+        # RULE-ACCEPTANCE-004 сохранено: исход без обеих предпосылок недопустим.
+        if outcome:
+            for field in ("tests_pass_ref", "developer_description_ref"):
+                if not str(pre.get(field) or "").strip():
+                    out.append("исход при отсутствии %s: передача на приёмку не выполнена "
+                               "(RULE-ACCEPTANCE-004)" % field)
         recorded = ((fm.get("ai_assistance") or {}).get("approval") or {}).get("recorded")
         if outcome and recorded is not True:
             out.append("outcome заполнен без approval.recorded = true (RULE-AI-001)")
