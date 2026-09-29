@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Приёмка плагина sigma-mes-skills 0.11.1. Запускать из корня репозитория:
+# Приёмка плагина sigma-mes-skills 0.11.2. Запускать из корня репозитория:
 #
 #   sh build/codex/checks/run-all.sh
 #

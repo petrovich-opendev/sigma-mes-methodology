@@ -8,7 +8,7 @@
 
 Использование:
   python3 extract_constitution.py constitution <file.md> > constitution.extract.yaml
-  python3 extract_constitution.py acceptance   <file.md> > acceptance.extract.yaml
+  python3 extract_constitution.py acceptance   <file.md> > acceptance-regulation.extract.yaml
 
 Скрипт ничего не придумывает: весь текст переносится дословно. Если ожидаемый
 элемент не найден, скрипт завершается с ошибкой, а не выдаёт неполный файл.

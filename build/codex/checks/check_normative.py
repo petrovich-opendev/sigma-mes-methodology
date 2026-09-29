@@ -2,7 +2,9 @@
 """Нормативные проверки по checks/normative-checks.yaml пакета промпта 0.11.0.
 
 Разделы: id_checks, deprecated, required_in_every_skill, forbidden_in_skills,
-decision_integrity (на примерах из fixtures/), fa_technical_markers (предупреждение).
+decision_integrity (на примерах из fixtures/), artifact_validation (правила validation
+из spec/artifacts.yaml для всех 21 типа; для acceptance-record — по Q-103),
+fa_technical_markers (предупреждение).
 
 Каждая проверка печатает OK, FAIL или WARN. Код возврата 1, если есть хотя бы один FAIL.
 Каталог плагина — plugins/sigma-mes-skills/, как в D-02 (Q-101 закрыт).
