@@ -21,7 +21,6 @@ gate: ''
 role: ''
 questions_to_consider: []
 findings: []
-reviewer_result: ''
 conclusion_text: ''
 ---
 

@@ -5,7 +5,7 @@
 decision_integrity (на примерах из fixtures/), fa_technical_markers (предупреждение).
 
 Каждая проверка печатает OK, FAIL или WARN. Код возврата 1, если есть хотя бы один FAIL.
-Каталог плагина — plugins/sigma-mes-skills/ (см. Q-101 в OPEN-QUESTIONS.md плагина).
+Каталог плагина — plugins/sigma-mes-skills/, как в D-02 (Q-101 закрыт).
 """
 import fnmatch
 import glob

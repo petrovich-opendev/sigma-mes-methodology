@@ -26,9 +26,7 @@ prerequisites:
   developer_description_ref: ''
   differences_from_fa: []
 step_results: []
-outcome: ''
 remarks_as_work_items: []
-after_rejection_decision: ''
 ---
 
 ## Функциональность

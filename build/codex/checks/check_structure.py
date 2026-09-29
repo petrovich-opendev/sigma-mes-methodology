@@ -4,8 +4,9 @@
 Каждая проверка печатает OK или FAIL с указанием, что именно не так. Код возврата 1,
 если есть хотя бы один FAIL. Ослаблять проверки ради прохождения запрещено.
 
-Каталог плагина — plugins/sigma-mes-skills/ (отступление от D-02, см. Q-101 в
-OPEN-QUESTIONS.md плагина: по пути из D-02 уже находится плагин 0.10.1 для Claude Code).
+Каталог плагина — plugins/sigma-mes-skills/, как в D-02 (Q-101 закрыт: поколение 0.10.x
+удалено из репозитория). S-07 и S-12 изменены решениями владельца процесса — пояснения у
+самих проверок.
 """
 import hashlib
 import json
@@ -192,14 +193,24 @@ problems = []
 STOP_PHRASES = ["не создавай", "не создаются", "работу не выполняй", "Работу не выполняй",
                 "не разрешена", "остановись", "заблокирован", "назови недостающие поля",
                 "предложи заполнить шаблон"]
-steps = re.split(r"\n### ", protocol)
-for step in steps:
-    head = step.split("\n", 1)[0]
-    if not re.match(r"S[1-6]\.", head):
+# Охвачены шаги S1–S6 и постоянные правила R1–R12: блокировка в правиле останавливает
+# работу так же, как в шаге. Режем по заголовкам второго и третьего уровня, чтобы
+# последний раздел не захватывал следующий за ним «Формат ответа».
+sections = re.split(r"\n#{2,3} ", protocol)
+covered = set()
+for section in sections:
+    head = section.split("\n", 1)[0]
+    m = re.match(r"(S[1-6]|R1[0-2]|R[1-9])\.", head)
+    if not m:
         continue
+    covered.add(m.group(1))
     for phrase in STOP_PHRASES:
-        if phrase in step:
+        if phrase in section:
             problems.append("%s содержит блокирующую формулировку «%s»" % (head, phrase))
+expected = {"S%d" % i for i in range(1, 7)} | {"R%d" % i for i in range(1, 13)}
+if covered != expected:
+    problems.append("охват протокола неполон, нет разделов: %s"
+                    % ", ".join(sorted(expected - covered)))
 for needle in ("## Главное: плагин самодостаточен", "### R11. Материалы пользователя",
                "### R12. Новые модули и гипотезы"):
     if needle not in protocol:
@@ -212,7 +223,10 @@ extra_carriers = [("config-template.yaml", read(os.path.join(SHARED, "config-tem
 for skill in SKILLS:
     text = read(os.path.join(PLUGIN, "skills", skill, "SKILL.md"))
     m = re.search(r"^## Протокол сеанса\n(.*?)(?=^## )", text, re.S | re.M)
-    extra_carriers.append(("%s/SKILL.md «Протокол сеанса»" % skill, m.group(1) if m else ""))
+    if not m:
+        problems.append("%s/SKILL.md: не найден раздел «Протокол сеанса»" % skill)
+        continue
+    extra_carriers.append(("%s/SKILL.md «Протокол сеанса»" % skill, m.group(1)))
 for name, text in extra_carriers:
     for phrase in STOP_PHRASES + ["не создают нормативных материалов"]:
         if phrase in text:

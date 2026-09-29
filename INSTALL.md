@@ -1,7 +1,7 @@
 # Установка и работа
 
-Плагин один: `sigma-mes-skills` версии 0.11.1 для ChatGPT (режимы Codex и Work) и Codex
-(CLI, IDE). Подробная установка — в `plugins/sigma-mes-skills/INSTALL.md`; здесь общий
+Плагин один: `sigma-mes-skills` версии 0.11.1 для ChatGPT (режимы Codex и Work, обычный
+режим чата и проект в чате) и Codex (CLI, IDE). Подробная установка — в `plugins/sigma-mes-skills/INSTALL.md`; здесь общий
 порядок и то, что относится к самому репозиторию.
 
 ## Коротко
@@ -42,7 +42,8 @@ sh build/codex/sync-shared.sh
 sh build/codex/checks/run-all.sh
 ```
 
-Нужен полный клон: проверка размещения файлов работает по git.
+Нужен git-клон, а не распакованный архив: проверка размещения файлов берёт перечень
+файлов из git.
 
 Зависимости: `python3`, `PyYAML`, `jsonschema`. Установка:
 
