@@ -6,7 +6,7 @@ product_id: ''
 revision: ''
 ai_assistance:
   plugin: sigma-mes-skills
-  plugin_version: 0.11.3
+  plugin_version: 0.11.4
   constitution_version: ''
   active_role: ''
   prepared_by_ai: true
@@ -25,6 +25,8 @@ external_exchange: []
 ui: []
 quality_requirement_refs: []
 ---
+
+## Карта модуля
 
 ## Функции
 
@@ -47,6 +49,10 @@ quality_requirement_refs: []
 ## Обмен с внешними системами
 
 ## Работа при недоступности внешних систем
+
+## Предположения
+
+## Открытые вопросы
 
 ## Передать
 

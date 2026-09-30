@@ -6,7 +6,7 @@ product_id: ''
 revision: ''
 ai_assistance:
   plugin: sigma-mes-skills
-  plugin_version: 0.11.3
+  plugin_version: 0.11.4
   constitution_version: ''
   active_role: ''
   prepared_by_ai: true
@@ -30,6 +30,8 @@ risks: []
 change: {}
 ---
 
+## Карта продукта
+
 ## Назначение
 
 ## Ценность
@@ -45,6 +47,10 @@ change: {}
 ## Риски
 
 ## Изменение
+
+## Предположения
+
+## Открытые вопросы
 
 ## Передать
 
