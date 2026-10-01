@@ -36,7 +36,7 @@
 ## T-05. GO на GATE-03 при исходе RETURNED
 
 - `plugins/sigma-mes-skills/skills/sigma-gates/SKILL.md` → «G-1. Пакет гейта», шаг 6
-  (исход RETURNED — блокирующий пункт) и шаг 7 (`go_excluded` = true).
+  (исход RETURNED — блокирующий пункт) и шаг 8 (`go_excluded` = true).
 
 ## T-06. Технические подробности в функциональной архитектуре
 
