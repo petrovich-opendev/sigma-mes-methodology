@@ -4,7 +4,7 @@
 Разделы: id_checks, deprecated, required_in_every_skill, forbidden_in_skills,
 decision_integrity (на примерах из fixtures/), artifact_validation (правила validation
 из spec/artifacts.yaml для всех 21 типа; для acceptance-record — по Q-103),
-fa_technical_markers (предупреждение).
+role_conditions (реестр условий ролей, R14 и Q-107), fa_technical_markers (предупреждение).
 
 Каждая проверка печатает OK, FAIL или WARN. Код возврата 1, если есть хотя бы один FAIL.
 Каталог плагина — plugins/sigma-mes-skills/, как в D-02 (Q-101 закрыт).
@@ -316,8 +316,79 @@ for name in sorted(docs):
         print("    отвергнут ожидаемо — %s: %s" % (name, "; ".join(found)))
 check("artifact_validation", not problems, "; ".join(problems[:6]))
 
+# ---------------------------------------------------------------- role_conditions
+# Реестр утверждённых условий ролей (правило R14 протокола, решение Q-107). Машина проверяет
+# то, что проверяемо по правилу «разрешено всё, что явно не запрещено и не задекларировано»:
+# роль — действующая роль Конституции; режимы — свои режимы навыка роли, гейты — из
+# Конституции; модуль — только у функционального архитектора; есть GO ROLE-AI-USE-CASE-OWNER
+# с цитатой и датой; в тексте нет формулировок, которые блокируют работу или решают за ИИ.
+# Смысловое противоречие Конституции проверяет навык при подготовке и человек при GO.
+ROLE_SKILL = {"ROLE-PRODUCT-OWNER": "sigma-product-owner",
+              "ROLE-FUNCTIONAL-ARCHITECT": "sigma-functional-architect",
+              "ROLE-TECHNICAL-ARCHITECT": "sigma-technical-architect"}
+RC_STOP = ["не создавай", "работу не выполняй", "остановись", "не продолжай без",
+           "назови недостающие поля", "предложи заполнить шаблон"]
+active_roles = {r["id"] for r in constitution["roles"] if r.get("status") == "active"}
+known_gates = {g["gate"] for g in constitution["stages_gates"]}
+
+
+def role_modes(role):
+    skill = ROLE_SKILL.get(role)
+    if not skill:
+        return {"G-2"}  # роль без своего навыка: её работа в плагине — форма заключения
+    text = read(os.path.join(PLUGIN, "skills", skill, "SKILL.md"))
+    return set(re.findall(r"^### (\S+)\.", text, re.M))
+
+
+def validate_role_conditions(entries):
+    problems = []
+    if not isinstance(entries, list):
+        return ["conditions должен быть списком"]
+    seen = set()
+    for i, c in enumerate(entries):
+        if not isinstance(c, dict):
+            problems.append("запись %d: не словарь" % (i + 1))
+            continue
+        tag = str(c.get("id") or "запись %d" % (i + 1))
+        for field in ("id", "role", "applies_to", "text", "reason", "proposed", "approval"):
+            if not c.get(field):
+                problems.append("%s: нет поля %s" % (tag, field))
+        if not re.match(r"^RC-\d{3}$", str(c.get("id", ""))):
+            problems.append("%s: номер не по шаблону RC-NNN" % tag)
+        if tag in seen:
+            problems.append("%s: номер повторяется" % tag)
+        seen.add(tag)
+        role = c.get("role")
+        if role not in active_roles:
+            problems.append("%s: %s — не действующая роль Конституции" % (tag, role))
+        if c.get("module") and role != "ROLE-FUNCTIONAL-ARCHITECT":
+            problems.append("%s: модуль задаётся только для ROLE-FUNCTIONAL-ARCHITECT" % tag)
+        own = role_modes(role) if role in active_roles else set()
+        for target in c.get("applies_to") or []:
+            target = str(target)
+            if target.startswith("GATE-"):
+                if target not in known_gates:
+                    problems.append("%s: гейта %s нет в Конституции" % (tag, target))
+            elif target not in own:
+                problems.append("%s: %s — не режим навыка роли %s" % (tag, target, role))
+        ap = c.get("approval") if isinstance(c.get("approval"), dict) else {}
+        if (ap.get("role") != "ROLE-AI-USE-CASE-OWNER" or ap.get("decision") != "GO"
+                or not str(ap.get("statement") or "").strip()
+                or not re.match(r"^\d{4}-\d{2}-\d{2}$", str(ap.get("date") or ""))):
+            problems.append("%s: нет GO ROLE-AI-USE-CASE-OWNER с цитатой и датой" % tag)
+        text = str(c.get("text") or "").lower()
+        for phrase in RC_STOP + spec["forbidden_in_skills"]:
+            if phrase.lower() in text:
+                problems.append("%s: недопустимая формулировка «%s»" % (tag, phrase))
+    return problems
+
+
+registry = yaml.safe_load(read(os.path.join(SHARED, "role-conditions.yaml"))) or {}
+rc_problems = validate_role_conditions(registry.get("conditions"))
+check("role_conditions", not rc_problems, "; ".join(rc_problems[:6]))
+
 # fa_technical_markers — только предупреждение
-fa_skill = os.path.join(PLUGIN, "skills", "sigma-functional-architect", "SKILL.md")
+fa_skill =os.path.join(PLUGIN, "skills", "sigma-functional-architect", "SKILL.md")
 text = read(fa_skill)
 before_transfer = text.split("## Передача другим ролям")[0]
 hits = []

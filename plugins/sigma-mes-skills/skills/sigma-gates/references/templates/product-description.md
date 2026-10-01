@@ -6,7 +6,7 @@ product_id: ''
 revision: ''
 ai_assistance:
   plugin: sigma-mes-skills
-  plugin_version: 0.11.4
+  plugin_version: 0.11.5
   constitution_version: ''
   active_role: ''
   prepared_by_ai: true

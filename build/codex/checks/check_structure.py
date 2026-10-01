@@ -145,10 +145,10 @@ check("S-04", not problems, "порядок или состав разделов
 
 # S-05. Режимы
 MODES = {
-    "sigma-product-owner": ["PO-%d" % i for i in range(1, 8)],
-    "sigma-functional-architect": ["FA-%d" % i for i in range(1, 13)],
-    "sigma-technical-architect": ["TA-%d" % i for i in range(1, 9)],
-    "sigma-gates": ["G-%d" % i for i in range(1, 4)],
+    "sigma-product-owner": ["PO-%d" % i for i in range(1, 9)],
+    "sigma-functional-architect": ["FA-%d" % i for i in range(1, 14)],
+    "sigma-technical-architect": ["TA-%d" % i for i in range(1, 10)],
+    "sigma-gates": ["G-%d" % i for i in range(1, 5)],
 }
 problems = []
 for skill, codes in MODES.items():
@@ -193,27 +193,28 @@ problems = []
 STOP_PHRASES = ["не создавай", "не создаются", "работу не выполняй", "Работу не выполняй",
                 "не разрешена", "остановись", "заблокирован", "назови недостающие поля",
                 "предложи заполнить шаблон"]
-# Охвачены шаги S1–S6 и постоянные правила R1–R13: блокировка в правиле останавливает
+# Охвачены шаги S1–S6 и постоянные правила R1–R14: блокировка в правиле останавливает
 # работу так же, как в шаге. Режем по заголовкам второго и третьего уровня, чтобы
 # последний раздел не захватывал следующий за ним «Формат ответа».
 sections = re.split(r"\n#{2,3} ", protocol)
 covered = set()
 for section in sections:
     head = section.split("\n", 1)[0]
-    m = re.match(r"(S[1-6]|R1[0-3]|R[1-9])\.", head)
+    m = re.match(r"(S[1-6]|R1[0-4]|R[1-9])\.", head)
     if not m:
         continue
     covered.add(m.group(1))
     for phrase in STOP_PHRASES:
         if phrase in section:
             problems.append("%s содержит блокирующую формулировку «%s»" % (head, phrase))
-expected = {"S%d" % i for i in range(1, 7)} | {"R%d" % i for i in range(1, 14)}
+expected = {"S%d" % i for i in range(1, 7)} | {"R%d" % i for i in range(1, 15)}
 if covered != expected:
     problems.append("охват протокола неполон, нет разделов: %s"
                     % ", ".join(sorted(expected - covered)))
 for needle in ("## Главное: плагин самодостаточен", "### R11. Материалы пользователя",
                "### R12. Новые модули и гипотезы",
-               "### R13. Сначала общая картина, потом детали"):
+               "### R13. Сначала общая картина, потом детали",
+               "### R14. Условия ролей"):
     if needle not in protocol:
         problems.append("нет раздела: %s" % needle)
 # Шаги протокола — не единственный носитель правила. Первая проверка v0.11.1 нашла
